@@ -1,0 +1,535 @@
+;;; Packages
+(require 'package)
+(package-initialize)
+(require 'diminish)
+(require 'adaptive-wrap)
+(require 'bind-key)
+
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+
+;;; General Settings
+
+;; Make all "yes or no" prompts show "y or n" instead
+(fset 'yes-or-no-p 'y-or-n-p)
+;; Use dialog boxes, if available
+(setq use-dialog-box t)
+;; Put current line number and column in the mode line
+(line-number-mode 1)       
+(setq column-number-mode t)
+;; Use menu-bar
+(menu-bar-mode 1)
+;; Paste at cursor, rather than pointer
+(setq mouse-yank-at-point t)
+;; Makes debugging easier
+(setq message-log-max 1000)
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+
+;; set current buffer's filename, and full path in titlebar
+;(setq frame-title-format '("Emacs %b" (buffer-file-name ": %f")))
+;; Show path info in buffers with otherwise identical filenames
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+;; Make very frequent autosaves
+(setq auto-save-interval 5)
+;; Make all backups in a single directory
+(when (boundp 'backup-directory-alist)
+  (let ((dir (expand-file-name "~/.emacs-backups")))
+    (or (file-directory-p dir) (make-directory dir))
+    (setq backup-directory-alist `(("." . ,dir)))))
+
+
+;; Word wrapping
+(add-hook 'visual-line-mode-hook
+	  (lambda ()
+	    (adaptive-wrap-prefix-mode t)
+	    (diminish 'visual-line-mode)))
+(global-visual-line-mode)
+(setq visual-line-fringe-indicators '(nil right-curly-arrow))
+
+
+;; CUA-mode
+(cua-mode t)
+(setq cua-enable-cursor-indications t)
+(setq cua-normal-cursor-color '(bar . "black")
+      cua-overwrite-cursor-color '(box . "blue")
+      cua-read-only-cursor-color '(box . "red"))
+
+;; Enable recently-opened files menu
+(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+(recentf-mode 1)
+(setq recentf-max-menu-items 30)
+(setq recentf-max-saved-items 500)
+(setq recentf-exclude '("[.]recentf" "[.]bm-repository$" 
+                           "[.]bmk$" "[.]abbrev_defs"
+                          "[.]elc$" "ido.last" "autoloads.el"))
+;; Save list when used, in case of crashes
+(defadvice recentf-open-files (after easymacs-recentf-advice activate)
+  (recentf-save-list))
+
+
+;; Enable font-lock (syntax highlighting) in modes which support it
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+
+;; show matching and mismatching brackets etc
+(setq show-paren-delay 0)
+(show-paren-mode t)
+
+;; save command history
+(savehist-mode 1)
+;; Save our session
+(require 'saveplace)
+(setq-default save-place t)
+
+(setq dabbrev-check-all-buffers t)
+
+;; buffer switching
+(ido-mode 'buffer)
+;; ibuffer-auto-mode refreshes after every command
+(add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+
+;; programming
+(add-hook 'prog-mode-hook 'linum-mode)
+
+;;; Utility functions
+
+  ;; Many of these functions are adapted from:
+  ;; http://www.dotemacs.de/dotfiles/ElijahDaniel.emacs.html
+
+  ;; Duplicate current line
+  (autoload 'copy-from-above-command "misc" "" t)
+  (defun easymacs-dup-line()
+    "Copy the current line and move down to edit it."
+    (interactive)                            
+    (save-excursion
+      (when (= 1 (forward-line 1))
+	(insert "\n"))
+      (copy-from-above-command)
+      (insert "\n"))
+    (next-line 1))
+
+  (defun easymacs-dup-region-old ()
+    "Duplicates the region."
+    (interactive)
+    (let* ((deactivate-mark nil)
+	   (start (region-beginning))
+	   (end (region-end))
+	   (contents (buffer-substring start end)))
+      (save-excursion
+	(goto-char end)
+	(insert contents))
+      (goto-char start)
+      (push-mark end)
+      (exchange-point-and-mark)))
+
+  (defun easymacs-dup-region ()
+    "Duplicates all lines in the region."
+    (interactive)
+    (let* ((deactivate-mark nil)
+	   (start (region-beginning))
+	   (end (region-end))
+	   (contents (buffer-substring
+                      (progn (goto-char start) (line-beginning-position))
+                      (progn (goto-char end) (line-end-position)))))
+      (save-excursion
+	(goto-char end)
+        (forward-line 1)
+	(insert contents))
+      (goto-char start)
+      (push-mark end)
+      (exchange-point-and-mark)))
+  
+  (defun easymacs-dup-region-or-line ()
+    (interactive)
+    (if mark-active
+	(easymacs-dup-region)
+      (easymacs-dup-line)))
+
+  ;; See also copy-from-above-command in misc.el
+  (defun easymacs-copy-char-above (&optional b)
+    "Copy a character exactly below/above the point
+to the current point of the cursor (default is above)."
+    (interactive "p")
+    (let (p col s)
+      (setq p (point))
+      (setq col (current-column))
+      (forward-line (if b -1 1))
+      (move-to-column col)
+      (setq s (buffer-substring (point) (+ (point) 1)))
+      (goto-char p)
+      (insert s)))
+
+  (defun easymacs-copy-char-below ()
+    (interactive)
+    (easymacs-copy-char-above nil))
+
+  (defun easymacs-prepend (start end s &optional append)
+    "Add a string in front of all lines in the region.
+If APPEND is non-nil, add the string to the end of lines."
+    (interactive "*r\nMEnter a string: ")
+    (save-excursion
+      (save-restriction
+	(narrow-to-region
+	 (progn (goto-char start) (line-beginning-position))
+	 (progn (goto-char end) (line-end-position)))
+	(goto-char (point-min))
+	(beginning-of-line)
+	(while (not (eobp))
+	  (if append (end-of-line))
+	  (insert s)
+	  (forward-line 1))))
+    (setq deactivate-mark nil))
+
+  (defun easymacs-prepend-line-or-region (s)
+    (interactive "MEnter a string: ")
+    (if mark-active
+	(easymacs-prepend
+	 (region-beginning)
+	 (region-end) s)
+      (easymacs-prepend (point) (point) s)))
+                                
+  (defun easymacs-append (start end s)
+    "Append a string to the end of all lines in region"
+    (interactive "*r\nMEnter a string: ")
+    (easymacs-prepend start end s t))
+
+  (defun easymacs-append-line-or-region (s)
+    (interactive "MEnter a string: ")
+    (if mark-active
+	(easymacs-append
+	 (region-beginning)
+	 (region-end) s)
+      (easymacs-append (point) (point) s)))
+
+
+
+;;; Mac stuff
+(when (memq window-system '(mac ns))
+  (setq ns-pop-up-frames nil
+        mac-command-modifier 'control
+        x-select-enable-clipboard t)
+  (exec-path-from-shell-initialize))
+
+;;; Spell-checking
+;; Get hunspell dictionaries like so:
+;; svn co https://src.chromium.org/chrome/trunk/deps/third_party/hunspell_dictionaries/
+;; make sure that one dictionary is soft-linked to default.dic and default.aff
+(when (executable-find "hunspell")
+  (setq-default ispell-program-name "hunspell")
+  (setq ispell-really-hunspell t))
+
+;;; Auctex
+(load "auctex.el" nil t t)
+;(load "preview-latex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master 'dwim)
+(setq tex-default-mode 'latex-mode)
+(setq-default TeX-engine 'xetex)
+(setq-default TeX-PDF-mode t)
+(setq-default TeX-save-query nil)
+
+;;(add-hook 'tex-mode-hook (function (lambda () (setq
+;;						 ispell-parser 'tex))))
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
+(setq reftex-plug-into-AUCTeX t)
+(add-hook 'LaTeX-mode-hook '(lambda ()
+			      (flyspell-mode 1)))
+  (defun LaTeX-insert-footnote ()
+    "Insert a \\footnote{} macro in a LaTeX-document."
+    (interactive)
+    (TeX-insert-macro "footnote")
+    (insert "\n")
+    (forward-char)
+    (insert " %")
+    (unless (looking-at "\n")
+      (insert "\n"))
+    (backward-char 4))
+
+  (defun LaTeX-insert-emph ()
+    "Insert an \\emph{} macro in a LaTeX-document."
+    (interactive)
+    (TeX-insert-macro "emph"))
+
+  (defun LaTeX-insert-textbf ()
+    "Insert a \\textbf{} macro in a LaTeX-document."
+    (interactive)
+    (TeX-insert-macro "textbf"))
+
+  (defun LaTeX-insert-textsc ()
+    "Insert a \\textsc{} macro in a LaTeX-document."
+    (interactive)
+    (TeX-insert-macro "textsc"))
+
+  (defun LaTeX-insert-uline ()
+    "Insert a \\uline{} macro in a LaTeX-document."
+    (interactive)
+    (TeX-insert-macro "uline"))
+
+(defun easymacs-run-latex ()
+  "Save and LaTeX `TeX-master-file' (without querying the user).
+Any files \\input by `TeX-master-file' are also saved without prompting."
+  (interactive)
+  (let (TeX-save-query)                                                   
+    (TeX-save-document (TeX-master-file))) 
+  (TeX-command "LaTeX" 'TeX-master-file))
+
+
+(add-hook 'LaTeX-mode-hook '(lambda ()
+    (local-set-key (kbd "C-e") 'LaTeX-insert-emph)
+    (local-set-key (kbd "C-b") 'LaTeX-insert-textbf)
+    (local-set-key (kbd "M-p") 'LaTeX-insert-textsc)
+    (local-set-key (kbd "M-f") 'LaTeX-insert-footnote)
+    (local-set-key (kbd "<f10>") 'TeX-complete-symbol)
+    (local-set-key (kbd "<f11>") 'TeX-view)
+    (local-set-key (kbd "<f12>") 'easymacs-run-latex)
+    (local-set-key (kbd "<S-f12>") 'TeX-command-master)
+    ))
+
+
+
+
+;;; Eshell
+;; Always save eshell history without asking
+(setq eshell-save-history-on-exit 't)
+(setq eshell-ask-to-save-history 'always)
+(setq eshell-prefer-to-shell t)
+;; Don't auto-complete ambiguities
+(setq eshell-cmpl-cycle-completions nil)
+
+
+;;; Dired
+
+  ;; Make dired less weird -- it always opens new files or directories
+  ;; in the current buffer, rather than endless spawning of new buffers
+  (defun easymacs-dired-mouse-find-file-same-window (event)
+    ;; Never open a new buffer from dired, even when clicking with the mouse
+    ;; Modified from dired.el
+    "In Dired, visit the file or directory name you click on."
+    (interactive "e")
+    (let (window pos file)
+      (save-excursion
+	(setq window (posn-window (event-end event))
+	      pos (posn-point (event-end event)))
+	(if (not (windowp window))
+	    (error "No file chosen"))
+	(set-buffer (window-buffer window))
+	(goto-char pos)
+	(setq file (dired-get-file-for-visit)))
+      (select-window window)
+      (find-alternate-file (file-name-sans-versions file t))))
+  
+  (eval-after-load "dired"
+    '(progn
+       ;; Never open a new buffer from dired, neither for files nor directories.
+       (defadvice dired-find-file (around dired-subst-directory activate)
+	 "Replace current buffer if file is a directory."
+	 (interactive)
+	 (let ((orig (current-buffer))
+	       (filename (dired-get-filename nil t)))
+	   ad-do-it
+	   (kill-buffer orig)))
+       (define-key dired-mode-map [mouse-2]
+         'easymacs-dired-mouse-find-file-same-window)
+       (define-key dired-mode-map "^" (function
+				       (lambda nil (interactive) 
+					 (find-alternate-file ".."))))))
+
+;;; Visible bookmarks
+
+;; Make sure the repository is loaded as early as possible
+(setq bm-restore-repository-on-load t)
+(require 'bm)
+;; Loading the repository from file when on start up.
+(add-hook' after-init-hook 'bm-repository-load)
+;; Restoring bookmarks when on file find.
+(add-hook 'find-file-hooks 'bm-buffer-restore)
+;; Saving bookmark data on killing a buffer
+(add-hook 'kill-buffer-hook 'bm-buffer-save)
+;; Saving the repository to file when on exit.
+;; kill-buffer-hook is not called when Emacs is killed, so we
+;; must save all bookmarks first.
+(add-hook 'kill-emacs-hook '(lambda nil
+                                (bm-buffer-save-all)
+                                (bm-repository-save)))
+;; Update bookmark repository when saving the file.
+(add-hook 'after-save-hook 'bm-buffer-save)
+;; Restore bookmarks when buffer is reverted.
+(add-hook 'after-revert-hook 'bm-buffer-restore)
+;; make bookmarks persistent as default
+(setq-default bm-buffer-persistence t)
+
+
+;;; Isearch
+(defun easymacs-vi-star-hash (forward)
+  ;; equivalents for * and # in Vim
+  (if mark-active
+      (progn
+	(isearch-mode forward nil nil nil nil)
+	(isearch-yank-string (buffer-substring (region-beginning)
+					       (region-end)))
+	(deactivate-mark))
+    (progn
+      (isearch-mode forward nil nil nil t)
+      (isearch-yank-string (current-word))))
+  (isearch-search-and-update))
+
+(defun isearch-yank-symbol ()
+  "*Put symbol at current point into search string."
+  (interactive)
+  (let ((sym (symbol-at-point)))
+    (if sym
+        (progn
+          (setq isearch-regexp t
+                isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
+                isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
+                isearch-yank-flag t))
+      (ding)))
+  (isearch-search-and-update))
+
+(defun easymacs-vi-star ()
+  (interactive)
+  (easymacs-vi-star-hash t))
+
+(defun easymacs-vi-hash ()
+  (interactive)
+  (easymacs-vi-star-hash nil))
+
+(global-set-key (kbd "C-f")   'isearch-forward)
+(global-set-key (kbd "C-S-f") 'isearch-backward)
+(global-set-key (kbd "C-r")   'replace-string)
+(global-set-key (kbd "C-S-r") 'query-replace)
+(global-set-key (kbd "M-r")   'replace-regexp)
+(global-set-key (kbd "M-S-r") 'query-replace-regexp)
+(global-set-key (kbd "C-*")   'easymacs-vi-star)
+(global-set-key (kbd "C-#")   'easymacs-vi-hash)
+(global-set-key (kbd "<S-f3>") 'occur)
+(define-key isearch-mode-map (kbd "C-f")           'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "C-S-f")         'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "C-*")           'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "C-#")           'isearch-repeat-backward)
+(define-key isearch-mode-map [escape]              'isearch-cancel)
+(define-key isearch-mode-map (kbd "<C-up>")        'isearch-ring-retreat)
+(define-key isearch-mode-map (kbd "<C-down>")      'isearch-ring-advance)
+(define-key isearch-mode-map (kbd "<f2>")           'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "<S-f2>")         'isearch-repeat-backward)
+
+
+;;; Regexps: re-builder and pcre2el
+(require 'pcre2el)
+(setq reb-re-syntax 'pcre)
+(pcre-mode t)
+(diminish 'pcre-mode)
+(global-set-key (kbd "<S-f3>") 're-builder)
+(define-key reb-mode-map (kbd "<f2>") 'reb-next-match)
+(define-key reb-mode-map (kbd "<S-f2>") 'reb-prev-match)
+(define-key reb-mode-map (kbd "<C-q>") 'reb-quit)
+(define-key reb-mode-map (kbd "<C-c>") 'reb-copy)
+
+;;; Elisp
+(defun easymacs-elisp-help ()
+  (interactive)
+  (let ((sym (intern-soft (thing-at-point 'symbol))))
+    (cond
+     ((and sym
+	   (fboundp sym)
+	   (not (boundp sym)))
+      (describe-function sym))
+     ((and sym
+	   (not (fboundp sym))
+	   (boundp sym))
+      (describe-variable sym))
+     ((and sym
+	   (fboundp sym)
+	   (boundp sym))
+      (if (yes-or-no-p "Both value and function are bound; describe function? ")
+	  (describe-function sym)
+	(describe-variable sym)))
+     (t
+      (call-interactively 'describe-function)))))
+(define-key emacs-lisp-mode-map (kbd "<S-f10>") 'easymacs-elisp-help)
+(define-key emacs-lisp-mode-map (kbd "<f10>")  'completion-at-point)
+(define-key emacs-lisp-mode-map (kbd "<f11>") 'eval-last-sexp)
+(define-key emacs-lisp-mode-map (kbd "<f12>") 'eval-defun)
+
+(autoload 'turn-on-eldoc-mode "eldoc" nil t)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+
+;;; General key-bindings
+(global-set-key [escape]          'keyboard-escape-quit)
+(global-set-key (kbd "<S-escape>")     'delete-other-windows)
+
+(global-set-key (kbd "C-`") 'other-frame)
+
+
+(global-set-key (kbd "C-s")   'save-buffer)
+(global-set-key (kbd "C-n")   '(lambda () (interactive)
+				 (let ((last-nonmenu-event nil))
+				   (call-interactively 'find-file))))
+(global-set-key (kbd "C-o")   '(lambda () (interactive)
+				 (let ((last-nonmenu-event nil))
+				   (call-interactively 'find-file-existing))))
+
+(global-set-key (kbd "<C-tab>")           'next-buffer)
+(global-set-key (kbd "<C-S-tab>")         'previous-buffer)
+(global-set-key (kbd "C-a")   'mark-whole-buffer)
+
+
+;; Killing
+(global-set-key (kbd "C-q")   'save-buffers-kill-emacs)
+(defun easymacs-kill-buffer ()
+    "Kill buffer and delete window if split without prompting"
+    (interactive)
+    (let ((buffer (current-buffer)))
+      (ignore-errors (delete-window (selected-window)))
+      (kill-buffer buffer)))
+(global-set-key (kbd "C-w")   'easymacs-kill-buffer)
+(global-set-key (kbd "C-S-w") 'easymacs-kill-some-buffers)
+
+;; Undo
+(global-undo-tree-mode 1)
+(defalias 'undo 'undo-tree-undo)
+(global-set-key (kbd "C-z") 'undo)
+(defalias 'redo 'undo-tree-redo)
+(global-set-key (kbd "C-S-z") 'redo)
+(global-set-key (kbd "C-y") 'redo)
+(global-set-key (kbd "M-z") 'undo-tree-visualize)
+(diminish 'undo-tree-mode)
+
+;;; Function keys
+
+(global-set-key (kbd "<f1>")   'ido-switch-buffer)
+(global-set-key (kbd "<C-f1>")    'find-file)
+(global-set-key (kbd "<M-f1>")  'recentf-open-files) 
+(global-set-key (kbd "<S-f1>")  'ibuffer)
+
+(global-set-key (kbd "<f2>")  'next-error)
+(global-set-key (kbd "<S-f2>")  'previous-error)
+
+(global-set-key (kbd "<M-f2>")   'bm-next)
+(global-set-key (kbd "<M-S-fs>")    'bm-previous)
+(global-set-key (kbd "<C-f2>")  'bm-toggle) 
+
+(global-set-key (kbd "<f3>")     'dabbrev-expand)
+(global-set-key (kbd "<S-f3>")   'easymacs-dup-region-or-line)
+(global-set-key (kbd "<C-f3>")   'easymacs-copy-char-above)
+
+
+(global-set-key (kbd "<f4>")     'delete-other-windows)
+(global-set-key (kbd "<S-f4>")   'other-window)
+
+(global-set-key (kbd "<f5>")     'flyspell-auto-correct-previous-word)
+
+
+
+;  (if (featurep 'kmacro)
+;      (progn
+;        (global-set-key (kbd "<M-f5>")   'kmacro-end-or-call-macro)
+;        (global-set-key (kbd "<S-M-f5>") 'kmacro-start-macro-or-insert-counter))
+;    (global-set-key (kbd "<M-f5>")   'easymacs-macro-end-or-call)
+;    (global-set-key (kbd "<S-M-f5>") 'easymacs-macro-start-or-counter))
