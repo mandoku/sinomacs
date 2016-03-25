@@ -57,6 +57,13 @@
       cua-overwrite-cursor-color '(box . "blue")
       cua-read-only-cursor-color '(box . "red"))
 
+;; Undo
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+(defalias 'undo 'undo-tree-undo)
+(defalias 'redo 'undo-tree-redo)
+(diminish 'undo-tree-mode)
+
 ;; Enable recently-opened files menu
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
 (recentf-mode 1)
@@ -96,8 +103,20 @@
 
 ;;; Utility functions
 
-  ;; Many of these functions are adapted from:
-  ;; http://www.dotemacs.de/dotfiles/ElijahDaniel.emacs.html
+(defun easymacs-comment-line-or-region (arg)
+  (interactive)
+  (let ((start (line-beginning-position))
+        (end (line-end-position)))
+    (when (or (not transient-mark-mode) (region-active-p))
+      (setq start (save-excursion
+                    (goto-char (region-beginning))
+                    (beginning-of-line)
+                    (point))
+            end (save-excursion
+                  (goto-char (region-end))
+                  (end-of-line)
+                  (point))))
+    (comment-region start end arg)))
 
   ;; Duplicate current line
   (autoload 'copy-from-above-command "misc" "" t)
@@ -110,20 +129,6 @@
       (copy-from-above-command)
       (insert "\n"))
     (next-line 1))
-
-  (defun easymacs-dup-region-old ()
-    "Duplicates the region."
-    (interactive)
-    (let* ((deactivate-mark nil)
-	   (start (region-beginning))
-	   (end (region-end))
-	   (contents (buffer-substring start end)))
-      (save-excursion
-	(goto-char end)
-	(insert contents))
-      (goto-char start)
-      (push-mark end)
-      (exchange-point-and-mark)))
 
   (defun easymacs-dup-region ()
     "Duplicates all lines in the region."
@@ -204,6 +209,12 @@ If APPEND is non-nil, add the string to the end of lines."
 	 (region-end) s)
       (easymacs-append (point) (point) s)))
 
+(defun easymacs-kill-buffer ()
+    "Kill buffer and delete window if split without prompting"
+    (interactive)
+    (let ((buffer (current-buffer)))
+      (ignore-errors (delete-window (selected-window)))
+      (kill-buffer buffer)))
 
 
 ;;; Mac stuff
@@ -277,7 +288,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (TeX-save-document (TeX-master-file))) 
   (TeX-command "LaTeX" 'TeX-master-file))
 
-
 (add-hook 'LaTeX-mode-hook '(lambda ()
     (local-set-key (kbd "C-e") 'LaTeX-insert-emph)
     (local-set-key (kbd "C-b") 'LaTeX-insert-textbf)
@@ -288,9 +298,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (local-set-key (kbd "<f12>") 'easymacs-run-latex)
     (local-set-key (kbd "<S-f12>") 'TeX-command-master)
     ))
-
-
-
 
 ;;; Eshell
 ;; Always save eshell history without asking
@@ -398,15 +405,15 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
   (interactive)
   (easymacs-vi-star-hash nil))
 
-(global-set-key (kbd "C-f")   'isearch-forward)
-(global-set-key (kbd "C-S-f") 'isearch-backward)
-(global-set-key (kbd "C-r")   'replace-string)
-(global-set-key (kbd "C-S-r") 'query-replace)
-(global-set-key (kbd "M-r")   'replace-regexp)
-(global-set-key (kbd "M-S-r") 'query-replace-regexp)
-(global-set-key (kbd "C-*")   'easymacs-vi-star)
-(global-set-key (kbd "C-#")   'easymacs-vi-hash)
-(global-set-key (kbd "<S-f3>") 'occur)
+(bind-key* (kbd "C-f")   'isearch-forward)
+(bind-key* (kbd "C-S-f") 'isearch-backward)
+(bind-key* (kbd "C-r")   'replace-string)
+(bind-key* (kbd "C-S-r") 'query-replace)
+(bind-key* (kbd "M-r")   'replace-regexp)
+(bind-key* (kbd "M-S-r") 'query-replace-regexp)
+(bind-key* (kbd "C-*")   'easymacs-vi-star)
+(bind-key* (kbd "C-#")   'easymacs-vi-hash)
+(bind-key* (kbd "<S-f3>") 'occur)
 (define-key isearch-mode-map (kbd "C-f")           'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "C-S-f")         'isearch-repeat-backward)
 (define-key isearch-mode-map (kbd "C-*")           'isearch-repeat-forward)
@@ -423,7 +430,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (setq reb-re-syntax 'pcre)
 (pcre-mode t)
 (diminish 'pcre-mode)
-(global-set-key (kbd "<S-f3>") 're-builder)
+(bind-key* (kbd "<S-f3>") 're-builder)
 (define-key reb-mode-map (kbd "<f2>") 'reb-next-match)
 (define-key reb-mode-map (kbd "<S-f2>") 'reb-prev-match)
 (define-key reb-mode-map (kbd "<C-q>") 'reb-quit)
@@ -460,71 +467,63 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
-;;; General key-bindings
-(global-set-key [escape]          'keyboard-escape-quit)
-(global-set-key (kbd "<S-escape>")     'delete-other-windows)
-
-(global-set-key (kbd "C-`") 'other-frame)
-
-
-(global-set-key (kbd "C-s")   'save-buffer)
-(global-set-key (kbd "C-n")   '(lambda () (interactive)
+;;; Global key-bindings
+(bind-key* [escape]		'keyboard-escape-quit)
+(bind-key* (kbd "<S-escape>")     'delete-other-windows)
+(bind-key* (kbd "C-`") 'other-frame)
+(bind-key* (kbd "<C-tab>")		'next-buffer)
+(bind-key* (kbd "<C-S-tab>")		'previous-buffer)
+(bind-key* (kbd "C-a")   'mark-whole-buffer)
+(bind-key* (kbd "C-s")   'save-buffer)
+(bind-key* (kbd "C-n")   '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file))))
-(global-set-key (kbd "C-o")   '(lambda () (interactive)
+(bind-key* (kbd "C-S-n") 'make-frame) 
+(bind-key* (kbd "C-o")   '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file-existing))))
-
-(global-set-key (kbd "<C-tab>")           'next-buffer)
-(global-set-key (kbd "<C-S-tab>")         'previous-buffer)
-(global-set-key (kbd "C-a")   'mark-whole-buffer)
-
-
-;; Killing
-(global-set-key (kbd "C-q")   'save-buffers-kill-emacs)
-(defun easymacs-kill-buffer ()
-    "Kill buffer and delete window if split without prompting"
-    (interactive)
-    (let ((buffer (current-buffer)))
-      (ignore-errors (delete-window (selected-window)))
-      (kill-buffer buffer)))
-(global-set-key (kbd "C-w")   'easymacs-kill-buffer)
-(global-set-key (kbd "C-S-w") 'easymacs-kill-some-buffers)
-
-;; Undo
-(global-undo-tree-mode 1)
-(defalias 'undo 'undo-tree-undo)
-(global-set-key (kbd "C-z") 'undo)
-(defalias 'redo 'undo-tree-redo)
-(global-set-key (kbd "C-S-z") 'redo)
-(global-set-key (kbd "C-y") 'redo)
-(global-set-key (kbd "M-z") 'undo-tree-visualize)
-(diminish 'undo-tree-mode)
+(bind-key* (kbd "C-q")   'save-buffers-kill-emacs)
+(bind-key* (kbd "C-w")   'easymacs-kill-buffer)
+(bind-key* (kbd "C-S-w") 'easymacs-kill-some-buffers)
+(bind-key* (kbd "C-z") 'undo)
+(bind-key* (kbd "C-S-z") 'redo)
+(bind-key* (kbd "C-y") 'redo)
+(bind-key* (kbd "M-z") 'undo-tree-visualize)
 
 ;;; Function keys
 
-(global-set-key (kbd "<f1>")   'ido-switch-buffer)
-(global-set-key (kbd "<C-f1>")    'find-file)
-(global-set-key (kbd "<M-f1>")  'recentf-open-files) 
-(global-set-key (kbd "<S-f1>")  'ibuffer)
+(bind-key* (kbd "<f1>")   'ido-switch-buffer)
+(bind-key* (kbd "<C-f1>")    'find-file)
+(bind-key* (kbd "<M-f1>")  'recentf-open-files) 
+(bind-key* (kbd "<S-f1>")  'ibuffer)
 
-(global-set-key (kbd "<f2>")  'next-error)
-(global-set-key (kbd "<S-f2>")  'previous-error)
+(bind-key* (kbd "<f2>")  'next-error)
+(bind-key* (kbd "<S-f2>")  'previous-error)
 
-(global-set-key (kbd "<M-f2>")   'bm-next)
-(global-set-key (kbd "<M-S-fs>")    'bm-previous)
-(global-set-key (kbd "<C-f2>")  'bm-toggle) 
+(bind-key* (kbd "<M-f2>")   'bm-next)
+(bind-key* (kbd "<M-S-fs>")    'bm-previous)
+(bind-key* (kbd "<C-f2>")  'bm-toggle) 
 
-(global-set-key (kbd "<f3>")     'dabbrev-expand)
-(global-set-key (kbd "<S-f3>")   'easymacs-dup-region-or-line)
-(global-set-key (kbd "<C-f3>")   'easymacs-copy-char-above)
+(bind-key* (kbd "<f3>")     'dabbrev-expand)
+(bind-key* (kbd "<S-f3>") '(lambda () (interactive)
+			     (copy-from-above-command 1)))
+(bind-key* (kbd "<C-f3>") '(lambda () (interactive)
+			     (copy-from-above-command)))
+(bind-key* (kbd "<M-f3>") '(lambda () (interactive)
+			     (easymacs-comment-line-or-region 1))) 
+(bind-key* (kbd "<M-S-f3>") '(lambda () (interactive)
+			     (easymacs-comment-line-or-region -1))) 
 
+(bind-key* (kbd "<f4>")     'delete-other-windows)
+(bind-key* (kbd "<S-f4>")   'other-window)
+(bind-key* (kbd "<C-f4>")     'linum-mode)
+(bind-key* (kbd "<M-f4>")     'save-buffers-kill-emacs)
 
-(global-set-key (kbd "<f4>")     'delete-other-windows)
-(global-set-key (kbd "<S-f4>")   'other-window)
+(bind-key* (kbd "<f5>")     'flyspell-auto-correct-previous-word)
 
-(global-set-key (kbd "<f5>")     'flyspell-auto-correct-previous-word)
-
+;; needs to toggle
+(bind-key* (kbd "<f6>")     'eshell)
+(bind-key* (kbd "<C-f6>")     'magit-status)
 
 
 ;  (if (featurep 'kmacro)
