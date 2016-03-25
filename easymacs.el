@@ -450,5 +450,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 		  (switch-to-buffer (other-buffer (current-buffer)))
 		(eshell))))
 (bind-key* (kbd "<C-f6>")     'magit-status)
-
+(eval-after-load "with-editor"
+    '(define-key with-editor-mode-map (kbd "<f12>") 'with-editor-finish))
 
