@@ -6,7 +6,7 @@
 (require 'bind-key)
 
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+	     '("melpa" . "https://melpa.org/packages/") t)
 
 ;;; General Settings
 
@@ -15,7 +15,7 @@
 ;; Use dialog boxes, if available
 (setq use-dialog-box t)
 ;; Put current line number and column in the mode line
-(line-number-mode 1)       
+(line-number-mode 1)
 (setq column-number-mode t)
 ;; Use menu-bar
 (menu-bar-mode 1)
@@ -69,9 +69,9 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 30)
 (setq recentf-max-saved-items 500)
-(setq recentf-exclude '("[.]recentf" "[.]bm-repository$" 
-                           "[.]bmk$" "[.]abbrev_defs"
-                          "[.]elc$" "ido.last" "autoloads.el"))
+(setq recentf-exclude '("[.]recentf" "[.]bm-repository$"
+			   "[.]bmk$" "[.]abbrev_defs"
+			  "[.]elc$" "ido.last" "autoloads.el"))
 ;; Save list when used, in case of crashes
 (defadvice recentf-open-files (after easymacs-recentf-advice activate)
   (recentf-save-list))
@@ -106,108 +106,17 @@
 (defun easymacs-comment-line-or-region (arg)
   (interactive)
   (let ((start (line-beginning-position))
-        (end (line-end-position)))
+	(end (line-end-position)))
     (when (or (not transient-mark-mode) (region-active-p))
       (setq start (save-excursion
-                    (goto-char (region-beginning))
-                    (beginning-of-line)
-                    (point))
-            end (save-excursion
-                  (goto-char (region-end))
-                  (end-of-line)
-                  (point))))
+		    (goto-char (region-beginning))
+		    (beginning-of-line)
+		    (point))
+	    end (save-excursion
+		  (goto-char (region-end))
+		  (end-of-line)
+		  (point))))
     (comment-region start end arg)))
-
-  ;; Duplicate current line
-  (autoload 'copy-from-above-command "misc" "" t)
-  (defun easymacs-dup-line()
-    "Copy the current line and move down to edit it."
-    (interactive)                            
-    (save-excursion
-      (when (= 1 (forward-line 1))
-	(insert "\n"))
-      (copy-from-above-command)
-      (insert "\n"))
-    (next-line 1))
-
-  (defun easymacs-dup-region ()
-    "Duplicates all lines in the region."
-    (interactive)
-    (let* ((deactivate-mark nil)
-	   (start (region-beginning))
-	   (end (region-end))
-	   (contents (buffer-substring
-                      (progn (goto-char start) (line-beginning-position))
-                      (progn (goto-char end) (line-end-position)))))
-      (save-excursion
-	(goto-char end)
-        (forward-line 1)
-	(insert contents))
-      (goto-char start)
-      (push-mark end)
-      (exchange-point-and-mark)))
-  
-  (defun easymacs-dup-region-or-line ()
-    (interactive)
-    (if mark-active
-	(easymacs-dup-region)
-      (easymacs-dup-line)))
-
-  ;; See also copy-from-above-command in misc.el
-  (defun easymacs-copy-char-above (&optional b)
-    "Copy a character exactly below/above the point
-to the current point of the cursor (default is above)."
-    (interactive "p")
-    (let (p col s)
-      (setq p (point))
-      (setq col (current-column))
-      (forward-line (if b -1 1))
-      (move-to-column col)
-      (setq s (buffer-substring (point) (+ (point) 1)))
-      (goto-char p)
-      (insert s)))
-
-  (defun easymacs-copy-char-below ()
-    (interactive)
-    (easymacs-copy-char-above nil))
-
-  (defun easymacs-prepend (start end s &optional append)
-    "Add a string in front of all lines in the region.
-If APPEND is non-nil, add the string to the end of lines."
-    (interactive "*r\nMEnter a string: ")
-    (save-excursion
-      (save-restriction
-	(narrow-to-region
-	 (progn (goto-char start) (line-beginning-position))
-	 (progn (goto-char end) (line-end-position)))
-	(goto-char (point-min))
-	(beginning-of-line)
-	(while (not (eobp))
-	  (if append (end-of-line))
-	  (insert s)
-	  (forward-line 1))))
-    (setq deactivate-mark nil))
-
-  (defun easymacs-prepend-line-or-region (s)
-    (interactive "MEnter a string: ")
-    (if mark-active
-	(easymacs-prepend
-	 (region-beginning)
-	 (region-end) s)
-      (easymacs-prepend (point) (point) s)))
-                                
-  (defun easymacs-append (start end s)
-    "Append a string to the end of all lines in region"
-    (interactive "*r\nMEnter a string: ")
-    (easymacs-prepend start end s t))
-
-  (defun easymacs-append-line-or-region (s)
-    (interactive "MEnter a string: ")
-    (if mark-active
-	(easymacs-append
-	 (region-beginning)
-	 (region-end) s)
-      (easymacs-append (point) (point) s)))
 
 (defun easymacs-kill-buffer ()
     "Kill buffer and delete window if split without prompting"
@@ -216,12 +125,11 @@ If APPEND is non-nil, add the string to the end of lines."
       (ignore-errors (delete-window (selected-window)))
       (kill-buffer buffer)))
 
-
 ;;; Mac stuff
 (when (memq window-system '(mac ns))
   (setq ns-pop-up-frames nil
-        mac-command-modifier 'control
-        x-select-enable-clipboard t)
+	mac-command-modifier 'control
+	x-select-enable-clipboard t)
   (exec-path-from-shell-initialize))
 
 ;;; Spell-checking
@@ -284,8 +192,8 @@ If APPEND is non-nil, add the string to the end of lines."
   "Save and LaTeX `TeX-master-file' (without querying the user).
 Any files \\input by `TeX-master-file' are also saved without prompting."
   (interactive)
-  (let (TeX-save-query)                                                   
-    (TeX-save-document (TeX-master-file))) 
+  (let (TeX-save-query)
+    (TeX-save-document (TeX-master-file)))
   (TeX-command "LaTeX" 'TeX-master-file))
 
 (add-hook 'LaTeX-mode-hook '(lambda ()
@@ -328,7 +236,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	(setq file (dired-get-file-for-visit)))
       (select-window window)
       (find-alternate-file (file-name-sans-versions file t))))
-  
+
   (eval-after-load "dired"
     '(progn
        ;; Never open a new buffer from dired, neither for files nor directories.
@@ -340,9 +248,9 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	   ad-do-it
 	   (kill-buffer orig)))
        (define-key dired-mode-map [mouse-2]
-         'easymacs-dired-mouse-find-file-same-window)
+	 'easymacs-dired-mouse-find-file-same-window)
        (define-key dired-mode-map "^" (function
-				       (lambda nil (interactive) 
+				       (lambda nil (interactive)
 					 (find-alternate-file ".."))))))
 
 ;;; Visible bookmarks
@@ -360,8 +268,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 ;; kill-buffer-hook is not called when Emacs is killed, so we
 ;; must save all bookmarks first.
 (add-hook 'kill-emacs-hook '(lambda nil
-                                (bm-buffer-save-all)
-                                (bm-repository-save)))
+				(bm-buffer-save-all)
+				(bm-repository-save)))
 ;; Update bookmark repository when saving the file.
 (add-hook 'after-save-hook 'bm-buffer-save)
 ;; Restore bookmarks when buffer is reverted.
@@ -389,11 +297,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
   (interactive)
   (let ((sym (symbol-at-point)))
     (if sym
-        (progn
-          (setq isearch-regexp t
-                isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
-                isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
-                isearch-yank-flag t))
+	(progn
+	  (setq isearch-regexp t
+		isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
+		isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
+		isearch-yank-flag t))
       (ding)))
   (isearch-search-and-update))
 
@@ -468,22 +376,22 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
 ;;; Global key-bindings
-(bind-key* [escape]		'keyboard-escape-quit)
-(bind-key* (kbd "<S-escape>")     'delete-other-windows)
+(bind-key* [escape] 'keyboard-escape-quit)
+(bind-key* (kbd "<S-escape>") 'delete-other-windows)
 (bind-key* (kbd "C-`") 'other-frame)
-(bind-key* (kbd "<C-tab>")		'next-buffer)
-(bind-key* (kbd "<C-S-tab>")		'previous-buffer)
-(bind-key* (kbd "C-a")   'mark-whole-buffer)
-(bind-key* (kbd "C-s")   'save-buffer)
-(bind-key* (kbd "C-n")   '(lambda () (interactive)
+(bind-key* (kbd "<C-tab>") 'next-buffer)
+(bind-key* (kbd "<C-S-tab>") 'previous-buffer)
+(bind-key* (kbd "C-a") 'mark-whole-buffer)
+(bind-key* (kbd "C-s") 'save-buffer)
+(bind-key* (kbd "C-n") '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file))))
-(bind-key* (kbd "C-S-n") 'make-frame) 
-(bind-key* (kbd "C-o")   '(lambda () (interactive)
+(bind-key* (kbd "C-S-n") 'make-frame)
+(bind-key* (kbd "C-o") '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file-existing))))
-(bind-key* (kbd "C-q")   'save-buffers-kill-emacs)
-(bind-key* (kbd "C-w")   'easymacs-kill-buffer)
+(bind-key* (kbd "C-q") 'save-buffers-kill-emacs)
+(bind-key* (kbd "C-w") 'easymacs-kill-buffer)
 (bind-key* (kbd "C-S-w") 'easymacs-kill-some-buffers)
 (bind-key* (kbd "C-z") 'undo)
 (bind-key* (kbd "C-S-z") 'redo)
@@ -492,37 +400,35 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 ;;; Function keys
 
-(bind-key* (kbd "<f1>")   'ido-switch-buffer)
-(bind-key* (kbd "<C-f1>")    'find-file)
-(bind-key* (kbd "<M-f1>")  'recentf-open-files) 
-(bind-key* (kbd "<S-f1>")  'ibuffer)
+;; F1
+(bind-key* (kbd "<f1>") 'ido-switch-buffer)
+(bind-key* (kbd "<C-f1>") 'find-file)
+(bind-key* (kbd "<M-f1>") 'recentf-open-files)
+(bind-key* (kbd "<S-f1>") 'ibuffer)
 
-(bind-key* (kbd "<f2>")  'next-error)
-(bind-key* (kbd "<S-f2>")  'previous-error)
+;; F2
+(bind-key* (kbd "<f2>") 'next-error)
+(bind-key* (kbd "<S-f2>") 'previous-error)
+(bind-key* (kbd "<M-f2>") 'bm-next)
+(bind-key* (kbd "<M-S-fs>") 'bm-previous)
+(bind-key* (kbd "<C-f2>") 'bm-toggle)
 
-(bind-key* (kbd "<M-f2>")   'bm-next)
-(bind-key* (kbd "<M-S-fs>")    'bm-previous)
-(bind-key* (kbd "<C-f2>")  'bm-toggle) 
-
-(bind-key* (kbd "<f3>")     'dabbrev-expand)
+;; F3
+(bind-key* (kbd "<f3>") 'dabbrev-expand)
 (bind-key* (kbd "<S-f3>") '(lambda () (interactive)
 			     (copy-from-above-command 1)))
 (bind-key* (kbd "<C-f3>") '(lambda () (interactive)
 			     (copy-from-above-command)))
 (bind-key* (kbd "<M-f3>") '(lambda () (interactive)
-			     (easymacs-comment-line-or-region 1))) 
+			     (easymacs-comment-line-or-region 1)))
 (bind-key* (kbd "<M-S-f3>") '(lambda () (interactive)
-			     (easymacs-comment-line-or-region -1))) 
+			     (easymacs-comment-line-or-region -1)))
+;; F4
+(bind-key* (kbd "<f4>") 'delete-other-windows)
+(bind-key* (kbd "<S-f4>") 'other-window)
+(bind-key* (kbd "<C-f4>") 'linum-mode)
+(bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
-(bind-key* (kbd "<f4>")     'delete-other-windows)
-(bind-key* (kbd "<S-f4>")   'other-window)
-(bind-key* (kbd "<C-f4>")     'linum-mode)
-(bind-key* (kbd "<M-f4>")     'save-buffers-kill-emacs)
-
-(bind-key* (kbd "<f5>")     'flyspell-auto-correct-previous-word)
-
-;; needs to toggle
-(bind-key* (kbd "<f6>")     'eshell)
 (bind-key* (kbd "<C-f6>")     'magit-status)
 
 
