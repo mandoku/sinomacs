@@ -452,9 +452,3 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<C-f6>")     'magit-status)
 
 
-;  (if (featurep 'kmacro)
-;      (progn
-;        (global-set-key (kbd "<M-f5>")   'kmacro-end-or-call-macro)
-;        (global-set-key (kbd "<S-M-f5>") 'kmacro-start-macro-or-insert-counter))
-;    (global-set-key (kbd "<M-f5>")   'easymacs-macro-end-or-call)
-;    (global-set-key (kbd "<S-M-f5>") 'easymacs-macro-start-or-counter))
