@@ -429,6 +429,26 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<C-f4>") 'linum-mode)
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
+;; F5
+(bind-key* (kbd "<f5>") 'flyspell-auto-correct-previous-word)
+(bind-key* (kbd "<S-f5>")
+	   '(lambda () (interactive)
+	      (eww (concat "http://www.wordnik.com/words/"
+				  (substring-no-properties
+				    (thing-at-point 'word))))))
+(bind-key* (kbd "<C-f5>")
+	   '(lambda () (interactive)
+	      (eww (concat "http://moby-thesaurus.org/search?q="
+				  (substring-no-properties
+				    (thing-at-point 'word))))))
+
+
+;; F6
+(bind-key* (kbd "<f6>")
+	   '(lambda () (interactive)
+	      (if (string= (buffer-name) "*eshell*")
+		  (switch-to-buffer (other-buffer (current-buffer)))
+		(eshell))))
 (bind-key* (kbd "<C-f6>")     'magit-status)
 
 
