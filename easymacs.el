@@ -4,6 +4,7 @@
 (require 'diminish)
 (require 'adaptive-wrap)
 (require 'bind-key)
+(require 'misc)
 
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/") t)
@@ -155,6 +156,9 @@
 ;;						 ispell-parser 'tex))))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
 (setq reftex-plug-into-AUCTeX t)
+(setq TeX-source-correlate-method 'synctex)
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+
 (add-hook 'LaTeX-mode-hook '(lambda ()
 			      (flyspell-mode 1)))
   (defun LaTeX-insert-footnote ()
@@ -203,6 +207,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (local-set-key (kbd "M-f") 'LaTeX-insert-footnote)
     (local-set-key (kbd "<f10>") 'TeX-complete-symbol)
     (local-set-key (kbd "<f11>") 'TeX-view)
+    (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
     (local-set-key (kbd "<f12>") 'easymacs-run-latex)
     (local-set-key (kbd "<S-f12>") 'TeX-command-master)
     ))
