@@ -31,17 +31,9 @@
 
 ;; ---------------------------------------------------------------
 
-;; Install dependencies
-
-(defvar easymacs-dependencies '(company bm undo-tree adaptive-wrap diminish pcre2re exec-path-from-shell))
-
-
-
-
-
 ;; This code simply creates or modifies an emacs configuration file in
 ;; the folder that Emacs regards as your Home folder.  If a
-;; configuration file already exists, then it is modified to append a
+;; configuration file already exists, then it is modified to pre-pend a
 ;; line to it that looks like this:
 ;;
 ;; (load "path/to/easymacs/folder/easymacs.el")
