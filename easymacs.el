@@ -1,12 +1,21 @@
-;;; Packages
+;;; Set-up packages
 (require 'package)
-(package-initialize)
-(require 'diminish)
-(require 'adaptive-wrap)
-(require 'bind-key)
-(require 'misc)
+(setq package-enable-at-startup nil)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+;; Set up use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+(setq use-package-always-ensure t)
+;; Needed by use-package
+(use-package diminish :ensure t)
+(use-package bind-key :ensure t)
+;; Internal packages
+(require 'misc)
 
 ;;; General Settings
 
@@ -26,6 +35,11 @@
 (setq inhibit-startup-message t)
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
+;; save command history
+(savehist-mode 1)
+;; Save our session
+(require 'saveplace)
+(setq-default save-place t)
 
 ;; set current buffer's filename, and full path in titlebar
 ;(setq frame-title-format '("Emacs %b" (buffer-file-name ": %f")))
@@ -40,15 +54,14 @@
     (or (file-directory-p dir) (make-directory dir))
     (setq backup-directory-alist `(("." . ,dir)))))
 
-
 ;; Word wrapping
+(use-package adaptive-wrap :ensure t)
 (add-hook 'visual-line-mode-hook
 	  (lambda ()
 	    (adaptive-wrap-prefix-mode t)
 	    (diminish 'visual-line-mode)))
 (global-visual-line-mode)
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
-
 
 ;; CUA-mode
 (cua-mode t)
@@ -58,11 +71,17 @@
       cua-read-only-cursor-color '(box . "red"))
 
 ;; Undo
-(require 'undo-tree)
-(global-undo-tree-mode 1)
-(defalias 'undo 'undo-tree-undo)
-(defalias 'redo 'undo-tree-redo)
-(diminish 'undo-tree-mode)
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (global-undo-tree-mode 1)
+  (defalias 'undo 'undo-tree-undo)
+  (defalias 'redo 'undo-tree-redo)
+  :bind (("C-z" . undo)
+	 ("C-S-z" . redo)
+	 ("C-y" . redo)
+	 ("M-z" . undo-tree-visualize)))
 
 ;; Enable recently-opened files menu
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
@@ -76,7 +95,6 @@
 (defadvice recentf-open-files (after easymacs-recentf-advice activate)
   (recentf-save-list))
 
-
 ;; Enable font-lock (syntax highlighting) in modes which support it
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
@@ -85,21 +103,27 @@
 (setq show-paren-delay 0)
 (show-paren-mode t)
 
-;; save command history
-(savehist-mode 1)
-;; Save our session
-(require 'saveplace)
-(setq-default save-place t)
-
 (setq dabbrev-check-all-buffers t)
 
-;; buffer switching
+;; Ido for buffer switching
 (ido-mode 'buffer)
 ;; ibuffer-auto-mode refreshes after every command
 (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+(setq ido-use-virtual-buffers t)
+
+(use-package smex
+  :ensure t
+  :bind (("M-x" . smex))
+  :config (smex-initialize))
 
 ;; programming
 (add-hook 'prog-mode-hook 'linum-mode)
+(use-package git-gutter-fringe
+  :ensure t
+  :config (global-git-gutter-mode 1))
+
+;; Visible bookmarks
+(use-package bm :ensure t)
 
 ;;; Utility functions
 
@@ -129,8 +153,11 @@
 (when (memq window-system '(mac ns))
   (setq ns-pop-up-frames nil
 	mac-command-modifier 'control
-	x-select-enable-clipboard t)
-  (exec-path-from-shell-initialize))
+	x-select-enable-clipboard t))
+(use-package exec-path-from-shell
+  :ensure t
+  :config (when (memq window-system '(mac ns))
+	    (exec-path-from-shell-initialize)))
 
 ;;; Spell-checking
 ;; Get hunspell dictionaries like so:
@@ -257,31 +284,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 				       (lambda nil (interactive)
 					 (find-alternate-file ".."))))))
 
-;;; Visible bookmarks
-
-;; Make sure the repository is loaded as early as possible
-(setq bm-restore-repository-on-load t)
-(require 'bm)
-;; Loading the repository from file when on start up.
-(add-hook' after-init-hook 'bm-repository-load)
-;; Restoring bookmarks when on file find.
-(add-hook 'find-file-hooks 'bm-buffer-restore)
-;; Saving bookmark data on killing a buffer
-(add-hook 'kill-buffer-hook 'bm-buffer-save)
-;; Saving the repository to file when on exit.
-;; kill-buffer-hook is not called when Emacs is killed, so we
-;; must save all bookmarks first.
-(add-hook 'kill-emacs-hook '(lambda nil
-				(bm-buffer-save-all)
-				(bm-repository-save)))
-;; Update bookmark repository when saving the file.
-(add-hook 'after-save-hook 'bm-buffer-save)
-;; Restore bookmarks when buffer is reverted.
-(add-hook 'after-revert-hook 'bm-buffer-restore)
-;; make bookmarks persistent as default
-(setq-default bm-buffer-persistence t)
-
-
 ;;; Isearch
 
 (bind-key* (kbd "C-d") 'isearch-forward-symbol-at-point)
@@ -305,15 +307,19 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (define-key isearch-mode-map (kbd "<S-f2>") 'isearch-repeat-backward)
 
 ;;; Regexps: re-builder and pcre2el
-(require 'pcre2el)
-(setq reb-re-syntax 'pcre)
-(pcre-mode t)
-(diminish 'pcre-mode)
-(bind-key* (kbd "<S-f3>") 're-builder)
-(define-key reb-mode-map (kbd "<f2>") 'reb-next-match)
-(define-key reb-mode-map (kbd "<S-f2>") 'reb-prev-match)
-(define-key reb-mode-map (kbd "<C-q>") 'reb-quit)
-(define-key reb-mode-map (kbd "<C-c>") 'reb-copy)
+(use-package pcre2el
+  :ensure t
+  :config (pcre-mode t)
+  :diminish pcre-mode)
+
+(use-package re-builder
+  :config (setq reb-re-syntax 'pcre)
+  :bind (("<S-f3>" . re-builder)
+	 :map reb-mode-map
+	 ("<f2>" . reb-next-match)
+	 ("<S-f2>" . reb-prev-match)
+	 ("C-q" . reb-quit)
+	 ("C-c" . reb-copy)))
 
 ;;; Elisp
 (defun easymacs-elisp-help ()
@@ -364,10 +370,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "C-q") 'save-buffers-kill-emacs)
 (bind-key* (kbd "C-w") 'easymacs-kill-buffer)
 (bind-key* (kbd "C-S-w") 'easymacs-kill-some-buffers)
-(bind-key* (kbd "C-z") 'undo)
-(bind-key* (kbd "C-S-z") 'redo)
-(bind-key* (kbd "C-y") 'redo)
-(bind-key* (kbd "M-z") 'undo-tree-visualize)
 
 ;;; Function keys
 
