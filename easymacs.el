@@ -5,7 +5,6 @@
 (require 'adaptive-wrap)
 (require 'bind-key)
 (require 'misc)
-
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/") t)
 
@@ -284,59 +283,26 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 
 ;;; Isearch
-(defun easymacs-vi-star-hash (forward)
-  ;; equivalents for * and # in Vim
-  (if mark-active
-      (progn
-	(isearch-mode forward nil nil nil nil)
-	(isearch-yank-string (buffer-substring (region-beginning)
-					       (region-end)))
-	(deactivate-mark))
-    (progn
-      (isearch-mode forward nil nil nil t)
-      (isearch-yank-string (current-word))))
-  (isearch-search-and-update))
 
-(defun isearch-yank-symbol ()
-  "*Put symbol at current point into search string."
-  (interactive)
-  (let ((sym (symbol-at-point)))
-    (if sym
-	(progn
-	  (setq isearch-regexp t
-		isearch-string (concat "\\_<" (regexp-quote (symbol-name sym)) "\\_>")
-		isearch-message (mapconcat 'isearch-text-char-description isearch-string "")
-		isearch-yank-flag t))
-      (ding)))
-  (isearch-search-and-update))
-
-(defun easymacs-vi-star ()
-  (interactive)
-  (easymacs-vi-star-hash t))
-
-(defun easymacs-vi-hash ()
-  (interactive)
-  (easymacs-vi-star-hash nil))
-
-(bind-key* (kbd "C-f")   'isearch-forward)
+(bind-key* (kbd "C-d") 'isearch-forward-symbol-at-point)
+(bind-key* (kbd "C-f") 'isearch-forward)
 (bind-key* (kbd "C-S-f") 'isearch-backward)
-(bind-key* (kbd "C-r")   'replace-string)
+(bind-key* (kbd "C-r") 'replace-string)
 (bind-key* (kbd "C-S-r") 'query-replace)
-(bind-key* (kbd "M-r")   'replace-regexp)
+(bind-key* (kbd "M-r") 'replace-regexp)
 (bind-key* (kbd "M-S-r") 'query-replace-regexp)
-(bind-key* (kbd "C-*")   'easymacs-vi-star)
-(bind-key* (kbd "C-#")   'easymacs-vi-hash)
+(bind-key* (kbd "C-*") 'easymacs-vi-star)
+(bind-key* (kbd "C-#") 'easymacs-vi-hash)
 (bind-key* (kbd "<S-f3>") 'occur)
-(define-key isearch-mode-map (kbd "C-f")           'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "C-S-f")         'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "C-*")           'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "C-#")           'isearch-repeat-backward)
-(define-key isearch-mode-map [escape]              'isearch-cancel)
-(define-key isearch-mode-map (kbd "<C-up>")        'isearch-ring-retreat)
-(define-key isearch-mode-map (kbd "<C-down>")      'isearch-ring-advance)
-(define-key isearch-mode-map (kbd "<f2>")           'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "<S-f2>")         'isearch-repeat-backward)
-
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "C-S-f") 'isearch-repeat-backward)
+(define-key isearch-mode-map (kbd "C-*") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "C-#") 'isearch-repeat-backward)
+(define-key isearch-mode-map [escape] 'isearch-cancel)
+(define-key isearch-mode-map (kbd "<C-up>") 'isearch-ring-retreat)
+(define-key isearch-mode-map (kbd "<C-down>") 'isearch-ring-advance)
+(define-key isearch-mode-map (kbd "<f2>") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "<S-f2>") 'isearch-repeat-backward)
 
 ;;; Regexps: re-builder and pcre2el
 (require 'pcre2el)
