@@ -103,7 +103,15 @@
 (setq show-paren-delay 0)
 (show-paren-mode t)
 
+;; Completion
 (setq dabbrev-check-all-buffers t)
+(use-package company
+  :ensure t
+  :diminish
+  :config (global-company-mode)
+  :bind* (("<f10>" . company-complete)
+	  :map company-active-map
+	  ("<escape>" . company-abort)))
 
 ;; Ido for buffer switching
 (ido-mode 'buffer)
@@ -111,10 +119,10 @@
 (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
 (setq ido-use-virtual-buffers t)
 
-(use-package smex
-  :ensure t
-  :bind* (("M-x" . smex))
-  :config (smex-initialize))
+; (use-package smex
+;   :ensure t
+;   :bind* (("M-x" . smex))
+;   :config (smex-initialize))
 
 ;; Programming aids
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -134,7 +142,7 @@
   :interpreter ("python" . python-mode)
   :config
   (when (executable-find "ipython")
-    (setq python-shell-interpreter "ipython"))
+    (setq python-shell-interpreter "ipython")))
   
 ;; Visible bookmarks
 (use-package bm :ensure t)
