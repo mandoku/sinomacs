@@ -107,7 +107,7 @@
 (setq dabbrev-check-all-buffers t)
 (use-package company
   :ensure t
-  :diminish
+  :diminish company-mode
   :config (global-company-mode)
   :bind* (("<f10>" . company-complete)
 	  :map company-active-map
@@ -135,6 +135,7 @@
     '(define-key with-editor-mode-map (kbd "<f12>") 'with-editor-finish))
 (use-package git-gutter-fringe
   :ensure t
+  :diminish 'git-gutter-mode
   :config (global-git-gutter-mode 1))
 
 (use-package python
@@ -370,9 +371,12 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (define-key emacs-lisp-mode-map (kbd "<f12>") 'eval-defun)
 
 (autoload 'turn-on-eldoc-mode "eldoc" nil t)
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook '(lambda ()
+				   (turn-on-eldoc-mode)
+				   (diminish 'eldoc-mode)))
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+
 
 ;;; Global key-bindings
 (bind-key* [escape] 'keyboard-escape-quit)
