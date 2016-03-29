@@ -78,7 +78,7 @@
   (global-undo-tree-mode 1)
   (defalias 'undo 'undo-tree-undo)
   (defalias 'redo 'undo-tree-redo)
-  :bind (("C-z" . undo)
+  :bind* (("C-z" . undo)
 	 ("C-S-z" . redo)
 	 ("C-y" . redo)
 	 ("M-z" . undo-tree-visualize)))
@@ -113,15 +113,29 @@
 
 (use-package smex
   :ensure t
-  :bind (("M-x" . smex))
+  :bind* (("M-x" . smex))
   :config (smex-initialize))
 
-;; programming
+;; Programming aids
 (add-hook 'prog-mode-hook 'linum-mode)
+
+(use-package magit
+  :ensure t
+  :bind* ("<C-f6>" . magit-status))
+;; To finish magit sub-editor
+(eval-after-load "with-editor"
+    '(define-key with-editor-mode-map (kbd "<f12>") 'with-editor-finish))
 (use-package git-gutter-fringe
   :ensure t
   :config (global-git-gutter-mode 1))
 
+(use-package python
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode)
+  :config
+  (when (executable-find "ipython")
+    (setq python-shell-interpreter "ipython"))
+  
 ;; Visible bookmarks
 (use-package bm :ensure t)
 
@@ -168,8 +182,8 @@
   (setq ispell-really-hunspell t))
 
 ;;; Auctex
-(load "auctex.el" nil t t)
-;(load "preview-latex.el" nil t t)
+(use-package tex-site
+  :ensure auctex)
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master 'dwim)
@@ -314,7 +328,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 (use-package re-builder
   :config (setq reb-re-syntax 'pcre)
-  :bind (("<S-f3>" . re-builder)
+  :bind* (("<S-f3>" . re-builder)
 	 :map reb-mode-map
 	 ("<f2>" . reb-next-match)
 	 ("<S-f2>" . reb-prev-match)
@@ -422,7 +436,4 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	      (if (string= (buffer-name) "*eshell*")
 		  (switch-to-buffer (other-buffer (current-buffer)))
 		(eshell))))
-(bind-key* (kbd "<C-f6>")     'magit-status)
-(eval-after-load "with-editor"
-    '(define-key with-editor-mode-map (kbd "<f12>") 'with-editor-finish))
-
+;; C-F6 is magit
