@@ -160,9 +160,20 @@
 	      (filename-and-process 0 -1 :left :elide))
 	(mark modified read-only " "
 	      (name 0 -1 :left :elide))))
-(setq ibuffer-use-header-line nil)
 ;; Make ibuffer refresh after every command
 (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
+
+;; imenu
+(defun imenu-or-not ()
+  "Try to add an imenu when we visit a file, catch and nil if
+the mode doesn't support imenu."
+  (condition-case nil
+      (imenu-add-menubar-index)
+    (error nil)))
+(add-to-list 'find-file-hooks 'imenu-or-not)
+(setq imenu-max-items 50
+      imenu-scanning-message nil
+      imenu-auto-rescan t)
 
 ;; Programming aids
 (add-hook 'prog-mode-hook 'linum-mode)
