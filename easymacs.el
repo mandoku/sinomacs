@@ -52,6 +52,7 @@
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
 (kill-buffer (get-buffer "*scratch*"))
+(set-language-environment "UTF-8")
 
 ;; Make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -496,6 +497,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 ;; F1
 (bind-key* (kbd "<f1>") 'ido-switch-buffer)
 (bind-key* (kbd "<C-f1>") 'find-file)
+(bind-key* (kbd "<S-C-f1>") '(lambda () (interactive) (find-file "")))
 (bind-key* (kbd "<M-f1>") 'recentf-open-files)
 (bind-key* (kbd "<S-f1>") 'ibuffer)
 
@@ -525,7 +527,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 ;; F4
 (bind-key* (kbd "<f4>") 'delete-other-windows)
 (bind-key* (kbd "<S-f4>") 'other-window)
-(bind-key* (kbd "<C-f4>") 'linum-mode)
+(bind-key* (kbd "<C-f4>") 'kmacro-end-or-call-macro)
+(bind-key* (kbd "<C-S-f4>") 'kmacro-start-macro-or-insert-counter) 
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
