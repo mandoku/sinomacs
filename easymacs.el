@@ -99,6 +99,8 @@
 (setq cua-normal-cursor-color '(bar . "black")
       cua-overwrite-cursor-color '(box . "blue")
       cua-read-only-cursor-color '(box . "red"))
+;; Keep selection active after copy
+(setq cua-keep-region-after-copy t)
 
 ;; Undo
 (use-package undo-tree
@@ -188,7 +190,9 @@ the mode doesn't support imenu."
 (use-package git-gutter-fringe
   :ensure t
   :diminish 'git-gutter-mode
-  :config (global-git-gutter-mode 1)
+  :config (progn
+	    (global-git-gutter-mode 1)
+	    (git-gutter:update-interval 1))
   :bind* ("<M-f6>" . git-gutter:next-hunk)
   :bind* ("<S-M-f6>" . git-gutter:previous-hunk)
   )
@@ -234,6 +238,12 @@ the mode doesn't support imenu."
     (let ((buffer (current-buffer)))
       (ignore-errors (delete-window (selected-window)))
       (kill-buffer buffer)))
+
+(defun easymacs-select-line ()
+  "Select current line"
+  (interactive)
+  (end-of-line)
+  (set-mark (line-beginning-position)))
 
 ;;; Mac stuff
 (when (memq window-system '(mac ns))
@@ -379,25 +389,36 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 ;;; Isearch
 
-(bind-key* (kbd "C-d") 'isearch-forward-symbol-at-point)
 (bind-key* (kbd "C-f") 'isearch-forward)
 (bind-key* (kbd "C-S-f") 'isearch-backward)
-(bind-key* (kbd "C-r") 'replace-string)
-(bind-key* (kbd "C-S-r") 'query-replace)
-(bind-key* (kbd "M-r") 'replace-regexp)
-(bind-key* (kbd "M-S-r") 'query-replace-regexp)
-(bind-key* (kbd "C-*") 'easymacs-vi-star)
-(bind-key* (kbd "C-#") 'easymacs-vi-hash)
-(bind-key* (kbd "<S-f3>") 'occur)
+(bind-key* (kbd "C-r") 'query-replace)
+(bind-key* (kbd "C-S-r") 'replace-string)
+(bind-key* (kbd "M-r") 'query-replace-regexp)
+(bind-key* (kbd "M-S-r") 'replace-regexp)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
 (define-key isearch-mode-map (kbd "C-S-f") 'isearch-repeat-backward)
-(define-key isearch-mode-map (kbd "C-*") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "C-#") 'isearch-repeat-backward)
 (define-key isearch-mode-map [escape] 'isearch-cancel)
 (define-key isearch-mode-map (kbd "<C-up>") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<C-down>") 'isearch-ring-advance)
-(define-key isearch-mode-map (kbd "<f2>") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "<S-f2>") 'isearch-repeat-backward)
+
+(bind-key* (kbd "C-d") '(lambda () (interactive)
+			  (beginning-of-thing 'symbol)
+			  (push-mark)
+			  (activate-mark)
+			  (end-of-thing 'symbol)))
+
+;; Modifies isearch to search for selected text, if there is a selection
+(defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+  (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+      (progn
+        (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+        (deactivate-mark)
+        ad-do-it
+        (if (not forward)
+            (isearch-repeat-backward)
+          (goto-char (mark))
+          (isearch-repeat-forward)))
+    ad-do-it))
 
 ;;; Regexps: re-builder and pcre2el
 (use-package pcre2el
@@ -546,7 +567,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 		  (switch-to-buffer (other-buffer (current-buffer)))
 		(eshell))))
 ;; C-F6 is magit-status, defined above
-;; (S-)M-F6 is git-gutter:next-hunk and prev
+;; (S-)M-F6 is git-gutter:next-hunk and previous-hunk
 
 ;; F7
 (bind-key* (kbd "<f7>") 'fold-dwim-toggle)
