@@ -188,12 +188,13 @@ the mode doesn't support imenu."
 (use-package git-gutter-fringe
   :ensure t
   :diminish 'git-gutter-mode
-  :config (progn
-	    (global-git-gutter-mode 1)
-	    (setq git-gutter:update-interval 1))
-  :bind* ("<M-f6>" . git-gutter:next-hunk)
-  :bind* ("<S-M-f6>" . git-gutter:previous-hunk)
-  )
+  :bind* (("<M-f6>" . git-gutter:next-hunk)
+	  ("<S-M-f6>" . git-gutter:previous-hunk)))
+;; Not sure why this doesn't work with autoloads
+(require 'git-gutter-fringe)
+(global-git-gutter-mode 1)
+(setq git-gutter:update-interval 0)
+
 
 (use-package python
   :mode ("\\.py\\'" . python-mode)
@@ -415,6 +416,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (define-key isearch-mode-map [escape] 'isearch-cancel)
 (define-key isearch-mode-map (kbd "<C-up>") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<C-down>") 'isearch-ring-advance)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+
 
 (bind-key* (kbd "C-d") '(lambda () (interactive)
 			  (beginning-of-thing 'symbol)
