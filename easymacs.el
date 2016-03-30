@@ -42,6 +42,8 @@
 (require 'fold-dwim)
 ;; Internal Emacs packages to load
 (require 'misc)
+(require 'hideshow)
+(require 'outline)
 
 ;;; General Settings
 
@@ -177,6 +179,14 @@
 ;; Visible bookmarks
 (use-package bm :ensure t)
 
+;; Folding for fold-dwim
+(setq hs-isearch-open t)
+(setq hs-hide-comments-when-hiding-all t)
+(setq hs-allow-nesting t)
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+(add-hook 'prog-mode-hook #'outline-minor-mode)
+(add-hook 'text-mode-hook #'outline-minor-mode)
+
 ;;; Utility functions
 
 (defun easymacs-comment-line-or-region (arg)
@@ -241,6 +251,10 @@
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 ;;(add-hook 'LaTeX-mode-hook '(lambda ()
 ;;			      (flyspell-mode 1)))
+(add-hook 'LaTeX-mode-hook '(lambda ()
+			      (TeX-fold-mode 1)
+			      ;; For folding comments
+			      (hs-minor-mode 1)))
 
   (defun LaTeX-insert-footnote ()
     "Insert a \\footnote{} macro in a LaTeX-document."
@@ -409,6 +423,31 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
+;;; XML
+
+;; For folding elements 
+(add-to-list 'hs-special-modes-alist
+	     '(nxml-mode
+	       "<!--\\|<[^/>]>\\|<[^/][^>]*[^/]>"
+	       ""
+	       "<!--" ;; won't work on its own; uses syntax table
+	       (lambda (arg) (easymacs-nxml-forward-element))
+	       nil
+	       ))
+(defun easymacs-nxml-forward-element ()
+  (let ((nxml-sexp-element-flag))
+    (setq nxml-sexp-element-flag (not (looking-at "<!--")))
+    (unless (looking-at outline-regexp)
+      (condition-case nil
+	  (nxml-forward-balanced-item 1)
+	(error nil)))))
+(add-hook 'nxml-mode-hook #'hs-minor-mode)
+
+(defun easymacs-nxml-mode-hook ()
+  (bind-key (kbd "<f5>") 'rng-next-error nxml-mode-map)
+  (bind-key (kbd "<S-f5>") 'rng-next-error nxml-mode-map))
+(add-hook 'nxml-mode-hook 'easymacs-nxml-mode-hook)
+
 
 ;;; Global key-bindings
 (bind-key* [escape] 'keyboard-escape-quit)
@@ -466,8 +505,9 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
-(bind-key* (kbd "<f5>") 'next-error)
-(bind-key* (kbd "<S-f5>") 'previous-error)
+;; We want F5 and S-F5 to be overridden 
+(bind-key (kbd "<f5>") 'next-error)
+(bind-key (kbd "<S-f5>") 'previous-error)
 (bind-key* (kbd "<M-f5>") 'bm-next)
 (bind-key* (kbd "<M-S-f5>") 'bm-previous)
 (bind-key* (kbd "<C-f5>") 'bm-toggle)
@@ -485,4 +525,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<f7>") 'fold-dwim-toggle)
 (bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
 (bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
+(bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
+(bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
