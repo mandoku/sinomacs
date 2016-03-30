@@ -47,6 +47,12 @@
 
 ;;; General Settings
 
+(setq message-log-max 1000)
+(setq inhibit-startup-message t)
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message nil)
+(kill-buffer (get-buffer "*scratch*"))
+
 ;; Make all "yes or no" prompts show "y or n" instead
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; Use dialog boxes, if available
@@ -58,11 +64,6 @@
 (menu-bar-mode 1)
 ;; Paste at cursor, rather than pointer
 (setq mouse-yank-at-point t)
-;; Makes debugging easier
-(setq message-log-max 1000)
-(setq inhibit-startup-message t)
-(setq inhibit-splash-screen t)
-(setq initial-scratch-message nil)
 ;; save command history
 (savehist-mode 1)
 ;; Save our session
@@ -141,16 +142,27 @@
 	  :map company-active-map
 	  ("<escape>" . company-abort)))
 
-;; Ido for buffer switching
+;; Ido and ibuffer for buffer switching
 (ido-mode 'buffer)
-;; ibuffer-auto-mode refreshes after every command
-(add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
 (setq ido-use-virtual-buffers t)
-
-; (use-package smex
-;   :ensure t
-;   :bind* (("M-x" . smex))
-;   :config (smex-initialize))
+;; Ignore non-user files in ido
+(defun easymacs-ido-ignore (name)
+  "Ignore all non-user (a.k.a. *starred*) buffers except *eshell*."
+  (and (string-match "^\*" name)
+       (not (string= name "*eshell*"))))
+(setq ido-ignore-buffers '("\\` " easymacs-ido-ignore))
+(require 'ibuffer)
+(require 'ibuf-ext)
+(add-to-list 'ibuffer-never-show-predicates "^\\*")
+;; Simplified ibuffer display
+(setq ibuffer-formats
+      '((mark modified read-only " "
+	      (filename-and-process 0 -1 :left :elide))
+	(mark modified read-only " "
+	      (name 0 -1 :left :elide))))
+(setq ibuffer-use-header-line nil)
+;; Make ibuffer refresh after every command
+(add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
 
 ;; Programming aids
 (add-hook 'prog-mode-hook 'linum-mode)
