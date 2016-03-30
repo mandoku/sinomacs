@@ -38,7 +38,9 @@
 ;; Needed by use-package
 (use-package diminish :ensure t)
 (use-package bind-key :ensure t)
-;; Internal packages
+;; Easymacs packages to load
+(require 'fold-dwim)
+;; Internal Emacs packages to load
 (require 'misc)
 
 ;;; General Settings
@@ -133,7 +135,7 @@
   :ensure t
   :diminish company-mode
   :config (global-company-mode)
-  :bind* (("<f10>" . company-complete)
+  :bind* (("<f3>" . company-complete)
 	  :map company-active-map
 	  ("<escape>" . company-abort)))
 
@@ -160,7 +162,10 @@
 (use-package git-gutter-fringe
   :ensure t
   :diminish 'git-gutter-mode
-  :config (global-git-gutter-mode 1))
+  :config (global-git-gutter-mode 1)
+  :bind* ("<M-f6>" . git-gutter:next-hunk)
+  :bind* ("<M-f6>" . git-gutter:previous-hunk)
+  )
 
 (use-package python
   :mode ("\\.py\\'" . python-mode)
@@ -213,6 +218,9 @@
 (when (executable-find "hunspell")
   (setq-default ispell-program-name "hunspell")
   (setq ispell-really-hunspell t))
+(add-hook 'text-mode-hook '(lambda ()
+			     (flyspell-mode 1)))
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 ;;; Auctex
 (use-package tex-site
@@ -231,9 +239,9 @@
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-source-correlate-method 'synctex)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+;;(add-hook 'LaTeX-mode-hook '(lambda ()
+;;			      (flyspell-mode 1)))
 
-(add-hook 'LaTeX-mode-hook '(lambda ()
-			      (flyspell-mode 1)))
   (defun LaTeX-insert-footnote ()
     "Insert a \\footnote{} macro in a LaTeX-document."
     (interactive)
@@ -430,14 +438,19 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<S-f1>") 'ibuffer)
 
 ;; F2
-(bind-key* (kbd "<f2>") 'next-error)
-(bind-key* (kbd "<S-f2>") 'previous-error)
-(bind-key* (kbd "<M-f2>") 'bm-next)
-(bind-key* (kbd "<M-S-fs>") 'bm-previous)
-(bind-key* (kbd "<C-f2>") 'bm-toggle)
+(bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
+(bind-key* (kbd "<S-f2>")
+	   '(lambda () (interactive)
+	      (eww (concat "http://www.wordnik.com/words/"
+				  (substring-no-properties
+				    (thing-at-point 'word))))))
+(bind-key* (kbd "<C-f2>")
+	   '(lambda () (interactive)
+	      (eww (concat "http://moby-thesaurus.org/search?q="
+				  (substring-no-properties
+				    (thing-at-point 'word))))))
 
-;; F3
-(bind-key* (kbd "<f3>") 'dabbrev-expand)
+;; F3 is company-complete (defined above)
 (bind-key* (kbd "<S-f3>") '(lambda () (interactive)
 			     (copy-from-above-command 1)))
 (bind-key* (kbd "<C-f3>") '(lambda () (interactive)
@@ -453,18 +466,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
-(bind-key* (kbd "<f5>") 'flyspell-auto-correct-previous-word)
-(bind-key* (kbd "<S-f5>")
-	   '(lambda () (interactive)
-	      (eww (concat "http://www.wordnik.com/words/"
-				  (substring-no-properties
-				    (thing-at-point 'word))))))
-(bind-key* (kbd "<C-f5>")
-	   '(lambda () (interactive)
-	      (eww (concat "http://moby-thesaurus.org/search?q="
-				  (substring-no-properties
-				    (thing-at-point 'word))))))
-
+(bind-key* (kbd "<f5>") 'next-error)
+(bind-key* (kbd "<S-f5>") 'previous-error)
+(bind-key* (kbd "<M-f5>") 'bm-next)
+(bind-key* (kbd "<M-S-f5>") 'bm-previous)
+(bind-key* (kbd "<C-f5>") 'bm-toggle)
 
 ;; F6
 (bind-key* (kbd "<f6>")
@@ -472,4 +478,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	      (if (string= (buffer-name) "*eshell*")
 		  (switch-to-buffer (other-buffer (current-buffer)))
 		(eshell))))
-;; C-F6 is magit
+;; C-F6 is magit-status, defined above
+;; (S-)M-F6 is git-gutter:next-hunk and prev
+
+;; F7
+(bind-key* (kbd "<f7>") 'fold-dwim-toggle)
+(bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
+(bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
+
