@@ -21,7 +21,7 @@ Alt-Z	Traverse Undo tree
 
 Window manipulation:
 
-Shft-escape	Remove pop-up window (also F4; Shft-F4 switches to pop-up)
+Shft-escape	Remove pop-up window (same as F4; Shft-F4 switches to pop-up)
 Shft-Ctrl-N	New window
 Ctrl-`		Switch window
 

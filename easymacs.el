@@ -253,6 +253,7 @@ the mode doesn't support imenu."
 	(setq list (cdr list))))
     (delete-other-windows)))
 
+;; FIXME bind this
 (defun easymacs-select-line ()
   "Select current line"
   (interactive)
@@ -519,7 +520,9 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "C-n") '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file))))
-(bind-key* (kbd "C-S-n") 'make-frame)
+(bind-key* (kbd "C-S-n") '(lambda () (interactive)
+			    (find-file-other-frame
+			     (concat easymacs-dir "easymacs-help.txt"))))
 (bind-key* (kbd "C-o") '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file-existing))))
@@ -590,8 +593,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
-;; Show splash page
-(find-file (concat easymacs-dir "easymacs-help.txt"))
-(beginning-of-buffer)
-(delete-other-windows)
+;;; Show replacement splash page
+(kill-buffer (get-buffer "*scratch*"))
+;; Workaround for a mac bug
+(find-file-other-frame
+ (concat easymacs-dir "easymacs-help.txt"))
+(delete-other-frames)
+(goto-char (point-min))
 (cd (expand-file-name "~/"))
