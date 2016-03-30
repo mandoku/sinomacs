@@ -166,7 +166,7 @@
   :diminish 'git-gutter-mode
   :config (global-git-gutter-mode 1)
   :bind* ("<M-f6>" . git-gutter:next-hunk)
-  :bind* ("<M-f6>" . git-gutter:previous-hunk)
+  :bind* ("<S-M-f6>" . git-gutter:previous-hunk)
   )
 
 (use-package python
@@ -478,12 +478,13 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 ;; F2
 (bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
-(bind-key* (kbd "<S-f2>")
+(bind-key* (kbd "<S-f2>") 'ispell-complete-word)
+(bind-key* (kbd "<C-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://www.wordnik.com/words/"
 				  (substring-no-properties
 				    (thing-at-point 'word))))))
-(bind-key* (kbd "<C-f2>")
+(bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://moby-thesaurus.org/search?q="
 				  (substring-no-properties
