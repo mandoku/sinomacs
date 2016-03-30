@@ -1,4 +1,28 @@
-;;; Set-up packages
+;;; Easymacs
+;;
+;; easymacs.el is a configuration for Emacs which is designed to be a learning environment for the digital humanities.  It provides an easy-to-install, cross-platform, comprehensive tool with key-bindings for basic editing tasks that should be familiar to non-technical users (some of these overwrite Emacs defaults).   It provides, for example, a schema-aware validating XML editor (nxml), a cross-platform command-line (eshell), integration with Git (magit) and a rich devopment environment for teaching programming in a variety of languages.
+;; 
+;; Author: Peter Heslin <p.j.heslin@dur.ac.uk>
+;; Maintainer: Peter Heslin <p.j.heslin@dur.ac.uk>
+;; 
+;; Copyright (C) 2003-16 Peter Heslin
+;; 
+;; This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2, or (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License along with GNU Emacs; see the file COPYING.  If not, write to the Free Software Foundation, 675 Massachusettes Ave, Cambridge, MA 02139, USA.
+
+(defvar easymacs-version "3.0")
+(unless (string-match "^24.[56789]\\|^2[56789]\\|^[3456789]" emacs-version)
+  (error "This version of Emacs is too old to run Easymacs; aborting."))
+(defvar easymacs-dir (file-name-directory
+		      (or load-file-name
+			  buffer-file-name)))
+(add-to-list 'load-path easymacs-dir)
+
+
+;;; Set-up for packages
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
