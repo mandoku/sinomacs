@@ -44,6 +44,7 @@
 (require 'misc)
 (require 'hideshow)
 (require 'outline)
+(require 'thingatpt)
 
 ;;; General Settings
 
@@ -108,11 +109,8 @@
   :diminish undo-tree-mode
   :config
   (global-undo-tree-mode 1)
-  (defalias 'undo 'undo-tree-undo)
-  (defalias 'redo 'undo-tree-redo)
-  :bind* (("C-z" . undo)
-	 ("C-S-z" . redo)
-	 ("C-y" . redo)
+  :bind* (("C-z" . undo-tree-undo)
+	 ("C-S-z" . undo-tree-redo)
 	 ("M-z" . undo-tree-visualize)))
 
 ;; Enable recently-opened files menu
@@ -192,7 +190,7 @@ the mode doesn't support imenu."
   :diminish 'git-gutter-mode
   :config (progn
 	    (global-git-gutter-mode 1)
-	    (git-gutter:update-interval 1))
+	    (setq git-gutter:update-interval 1))
   :bind* ("<M-f6>" . git-gutter:next-hunk)
   :bind* ("<S-M-f6>" . git-gutter:previous-hunk)
   )
@@ -238,6 +236,22 @@ the mode doesn't support imenu."
     (let ((buffer (current-buffer)))
       (ignore-errors (delete-window (selected-window)))
       (kill-buffer buffer)))
+
+(defun easymacs-kill-some-buffers ()
+  "Kill most unmodified buffers, except for a few."
+  (interactive)
+  (when (yes-or-no-p "Close unmodified files? ")
+    (let ((list (buffer-list)))
+      (while list
+	(let* ((buffer (car list))
+	       (name (buffer-name buffer)))
+	  (when (if (string-match "^\\*.*\\*$" name)
+		    (and (not (string-equal name "*Messages*"))
+			 (not (string-equal name "*eshell*")))
+		  (not (buffer-modified-p buffer)))
+	    (kill-buffer buffer)))
+	(setq list (cdr list))))
+    (delete-other-windows)))
 
 (defun easymacs-select-line ()
   "Select current line"
@@ -498,8 +512,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* [escape] 'keyboard-escape-quit)
 (bind-key* (kbd "<S-escape>") 'delete-other-windows)
 (bind-key* (kbd "C-`") 'other-frame)
-(bind-key* (kbd "<C-tab>") 'next-buffer)
-(bind-key* (kbd "<C-S-tab>") 'previous-buffer)
+;;(bind-key* (kbd "<C-tab>") 'next-buffer)
+;;(bind-key* (kbd "<C-S-tab>") 'previous-buffer)
 (bind-key* (kbd "C-a") 'mark-whole-buffer)
 (bind-key* (kbd "C-s") 'save-buffer)
 (bind-key* (kbd "C-n") '(lambda () (interactive)
@@ -576,3 +590,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
+;; Show splash page
+(find-file (concat easymacs-dir "easymacs-help.txt"))
+(beginning-of-buffer)
+(delete-other-windows)
+(cd (expand-file-name "~/"))
