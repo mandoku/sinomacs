@@ -224,6 +224,14 @@ the mode doesn't support imenu."
 
 ;;; Utility functions
 
+(defun easymacs-make-dist ()
+  (interactive)
+  (save-some-buffers)
+  (cd easymacs-dir)
+  (cd "..")
+  (start-process "zip" "*zip*"
+		 "zip" "-r" "easymacs.zip" "easymacs" "-x" "easymacs/.git/*"))
+
 (defun easymacs-comment-line-or-region (arg)
   (interactive)
   (let ((start (line-beginning-position))
