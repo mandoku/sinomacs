@@ -202,12 +202,12 @@ the mode doesn't support imenu."
 (setq git-gutter:update-interval 0)
 
 
-(use-package python
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python" . python-mode)
-  :config
-  (when (executable-find "ipython")
-    (setq python-shell-interpreter "ipython")))
+; (use-package python
+;   :mode ("\\.py\\'" . python-mode)
+;   :interpreter ("python" . python-mode)
+;   :config
+;   (when (executable-find "ipython")
+;     (setq python-shell-interpreter "ipython")))
   
 ;; Visible bookmarks
 (use-package bm :ensure t)
