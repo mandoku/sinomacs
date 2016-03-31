@@ -1,4 +1,4 @@
-This is Easymacs, an easy to use configuration of the Emacs editor for the Digital Humanities.  Many basic file operations have familiar keystrokes using the control key (or the Mac command key).  
+This is Easymacs, an easy to use configuration of the Emacs editor for Digital Humanities.  Many basic file operations have familiar keystrokes using the control key (or the Mac command key).  
 
 Ctrl-N	New file (you have to give it a name before editing)
 Ctrl-O	Open file
@@ -19,7 +19,7 @@ Ctrl-D	Select current word (then Ctrl-F will search for it)
 Ctrl-Z	Undo (shift to Redo)
 Alt-Z	Traverse Undo tree
 
-Window manipulation:
+Window manipulation (Use F1 to switch between open files):
 
 Shft-escape	Remove pop-up window (same as F4; Shft-F4 switches to pop-up)
 Shft-Ctrl-N	New window
@@ -27,11 +27,12 @@ Ctrl-`		Switch window
 
 There are also some convenient function keys:
 
-F1    	  	Change between open files (and recent files)
+F1    	  	Switch between open files 
 Shft-F1		List open files
 Ctrl-F1		Open file (different interface to Ctrl-O)
-Shft-Ctrl-F1 	Open directory 
+Shft-Ctrl-F1 	Open folder
 Alt-F1 		Show list of recently opened files
+Shft-Alt-F1	Open file or URL under the cursor
 
 F2 		Fix previous highlighted mispelling
 Shft-F2		Complete word from dictionary

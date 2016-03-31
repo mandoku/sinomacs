@@ -40,11 +40,16 @@
 (use-package bind-key :ensure t)
 ;; Easymacs packages to load
 (require 'fold-dwim)
+(require 'tei-html-docs-p5)
 ;; Internal Emacs packages to load
 (require 'misc)
 (require 'hideshow)
 (require 'outline)
 (require 'thingatpt)
+
+(require 'info)
+(info-initialize)
+(add-to-list 'Info-directory-list easymacs-dir)
 
 ;;; General Settings
 
@@ -120,7 +125,8 @@
 (setq recentf-max-saved-items 500)
 (setq recentf-exclude '("[.]recentf" "[.]bm-repository$"
 			   "[.]bmk$" "[.]abbrev_defs"
-			  "[.]elc$" "ido.last" "autoloads.el"))
+			   "[.]elc$" "ido.last" "autoloads.el"
+			   "easymacs-help.txt"))
 ;; Save list when used, in case of crashes
 (defadvice recentf-open-files (after easymacs-recentf-advice activate)
   (recentf-save-list))
@@ -213,6 +219,8 @@ the mode doesn't support imenu."
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'prog-mode-hook #'outline-minor-mode)
 (add-hook 'text-mode-hook #'outline-minor-mode)
+(diminish 'hs-minor-mode)
+(diminish 'outline-minor-mode)
 
 ;;; Utility functions
 
@@ -292,50 +300,45 @@ the mode doesn't support imenu."
 (setq-default TeX-engine 'xetex)
 (setq-default TeX-PDF-mode t)
 (setq-default TeX-save-query nil)
-
-;;(add-hook 'tex-mode-hook (function (lambda () (setq
-;;						 ispell-parser 'tex))))
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-source-correlate-method 'synctex)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-;;(add-hook 'LaTeX-mode-hook '(lambda ()
-;;			      (flyspell-mode 1)))
 (add-hook 'LaTeX-mode-hook '(lambda ()
 			      (TeX-fold-mode 1)
 			      ;; For folding comments
 			      (hs-minor-mode 1)))
 
-  (defun LaTeX-insert-footnote ()
-    "Insert a \\footnote{} macro in a LaTeX-document."
-    (interactive)
-    (TeX-insert-macro "footnote")
-    (insert "\n")
-    (forward-char)
-    (insert " %")
-    (unless (looking-at "\n")
-      (insert "\n"))
-    (backward-char 4))
+(defun LaTeX-insert-footnote ()
+  "Insert a \\footnote{} macro in a LaTeX-document."
+  (interactive)
+  (TeX-insert-macro "footnote")
+  (insert "\n")
+  (forward-char)
+  (insert " %")
+  (unless (looking-at "\n")
+    (insert "\n"))
+  (backward-char 4))
 
-  (defun LaTeX-insert-emph ()
-    "Insert an \\emph{} macro in a LaTeX-document."
-    (interactive)
-    (TeX-insert-macro "emph"))
+(defun LaTeX-insert-emph ()
+  "Insert an \\emph{} macro in a LaTeX-document."
+  (interactive)
+  (TeX-insert-macro "emph"))
 
-  (defun LaTeX-insert-textbf ()
-    "Insert a \\textbf{} macro in a LaTeX-document."
-    (interactive)
-    (TeX-insert-macro "textbf"))
+(defun LaTeX-insert-textbf ()
+  "Insert a \\textbf{} macro in a LaTeX-document."
+  (interactive)
+  (TeX-insert-macro "textbf"))
 
-  (defun LaTeX-insert-textsc ()
-    "Insert a \\textsc{} macro in a LaTeX-document."
-    (interactive)
-    (TeX-insert-macro "textsc"))
+(defun LaTeX-insert-textsc ()
+  "Insert a \\textsc{} macro in a LaTeX-document."
+  (interactive)
+  (TeX-insert-macro "textsc"))
 
-  (defun LaTeX-insert-uline ()
-    "Insert a \\uline{} macro in a LaTeX-document."
-    (interactive)
-    (TeX-insert-macro "uline"))
+(defun LaTeX-insert-uline ()
+  "Insert a \\uline{} macro in a LaTeX-document."
+  (interactive)
+  (TeX-insert-macro "uline"))
 
 (defun easymacs-run-latex ()
   "Save and LaTeX `TeX-master-file' (without querying the user).
@@ -345,17 +348,50 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (TeX-save-document (TeX-master-file)))
   (TeX-command "LaTeX" 'TeX-master-file))
 
+(defun easymacs-auctex-help-at-point ()
+  (interactive)
+  (save-excursion
+    (goto-char (or (TeX-find-macro-start)
+		   (re-search-backward (regexp-quote TeX-esc) nil t)))
+    (re-search-forward (concat (regexp-quote TeX-esc) "\\sw+") nil t)
+    (info-lookup-symbol (match-string 0))))
+
 (add-hook 'LaTeX-mode-hook '(lambda ()
     (local-set-key (kbd "C-e") 'LaTeX-insert-emph)
     (local-set-key (kbd "C-b") 'LaTeX-insert-textbf)
     (local-set-key (kbd "M-p") 'LaTeX-insert-textsc)
     (local-set-key (kbd "M-f") 'LaTeX-insert-footnote)
+    (local-set-key (kbd "<f9>") 'easymacs-auctex-help-at-point)
     (local-set-key (kbd "<f10>") 'TeX-complete-symbol)
     (local-set-key (kbd "<f11>") 'TeX-view)
     (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
     (local-set-key (kbd "<f12>") 'easymacs-run-latex)
     (local-set-key (kbd "<S-f12>") 'TeX-command-master)
     ))
+
+;; Bibtex
+;; Prompt for bibtex entry types
+(defun easymacs-insert-bibtex-entry ()
+  (interactive)
+  (funcall (intern
+	    (concat "bibtex-"
+		    (completing-read
+		     "Entry type (tab for list): " 
+		     (mapcar 'car bibtex-entry-field-alist))))))
+(add-hook 'bibtex-mode-hook (lambda ()
+			      (local-set-key (kbd "<f10>")
+					     'bibtex-clean-entry)
+			      (local-set-key (kbd "<f11>")
+					     'easymacs-insert-bibtex-entry)
+			      (local-set-key (kbd "<f10>")
+					     'bibtex-fill-entry)
+			      (local-set-key (kbd "C-e")
+					     'LaTeX-insert-emph)))
+
+(add-hook 'reftex-index-phrases-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-e")
+			   'LaTeX-insert-emph)))
 
 ;;; Eshell
 ;; Always save eshell history without asking
@@ -417,7 +453,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (define-key isearch-mode-map (kbd "<C-up>") 'isearch-ring-retreat)
 (define-key isearch-mode-map (kbd "<C-down>") 'isearch-ring-advance)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
-
+(define-key isearch-mode-map (kbd "<f1>") 'ido-switch-buffer)
 
 (bind-key* (kbd "C-d") '(lambda () (interactive)
 			  (beginning-of-thing 'symbol)
@@ -474,7 +510,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	(describe-variable sym)))
      (t
       (call-interactively 'describe-function)))))
-(define-key emacs-lisp-mode-map (kbd "<S-f10>") 'easymacs-elisp-help)
+(define-key emacs-lisp-mode-map (kbd "<f9>") 'easymacs-elisp-help)
 (define-key emacs-lisp-mode-map (kbd "<f10>")  'completion-at-point)
 (define-key emacs-lisp-mode-map (kbd "<f11>") 'eval-last-sexp)
 (define-key emacs-lisp-mode-map (kbd "<f12>") 'eval-defun)
@@ -508,7 +544,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 (defun easymacs-nxml-mode-hook ()
   (bind-key (kbd "<f5>") 'rng-next-error nxml-mode-map)
-  (bind-key (kbd "<S-f5>") 'rng-next-error nxml-mode-map))
+  (bind-key (kbd "<S-f5>") 'rng-next-error nxml-mode-map)
+  (bind-key (kbd "<f9>") 'tei-html-docs-p5-element-at-point
+	    nxml-mode-map))
+
+
 (add-hook 'nxml-mode-hook 'easymacs-nxml-mode-hook)
 
 
@@ -537,10 +577,11 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 ;; F1
 (bind-key* (kbd "<f1>") 'ido-switch-buffer)
+(bind-key* (kbd "<S-f1>") 'ibuffer)
 (bind-key* (kbd "<C-f1>") 'find-file)
 (bind-key* (kbd "<S-C-f1>") '(lambda () (interactive) (find-file "")))
 (bind-key* (kbd "<M-f1>") 'recentf-open-files)
-(bind-key* (kbd "<S-f1>") 'ibuffer)
+(bind-key* (kbd "<S-M-f1>") 'ffap)
 
 ;; F2
 (bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
