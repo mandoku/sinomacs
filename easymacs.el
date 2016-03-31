@@ -270,7 +270,6 @@ the mode doesn't support imenu."
 	(setq list (cdr list))))
     (delete-other-windows)))
 
-;; FIXME bind this
 (defun easymacs-select-line ()
   "Select current line"
   (interactive)
@@ -412,6 +411,17 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 ;; Don't auto-complete ambiguities
 (setq eshell-cmpl-cycle-completions nil)
 
+(defun easymacs-eshell ()
+  "Eshell with switch to directory of current buffer"
+  (interactive)
+  (let ((dir default-directory))
+    (eshell)
+    ;; Make sure it's at the front of the buffer-list
+    (switch-to-buffer "*eshell*")
+    (eshell-kill-input)
+    (unless (string= (expand-file-name dir) (expand-file-name default-directory))
+      (eshell/cd dir)
+      (eshell-send-input))))
 
 ;;; Dired
 
@@ -471,6 +481,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 			  (push-mark)
 			  (activate-mark)
 			  (end-of-thing 'symbol)))
+(bind-key* (kbd "S-C-d") 'easymacs-select-line)
 
 ;; Modifies isearch to search for selected text, if there is a selection
 (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
@@ -678,7 +689,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	   '(lambda () (interactive)
 	      (if (string= (buffer-name) "*eshell*")
 		  (switch-to-buffer (other-buffer (current-buffer)))
-		(eshell))))
+		(easymacs-eshell))))
 ;; C-F6 is magit-status, defined above
 ;; (S-)M-F6 is git-gutter:next-hunk and previous-hunk
 
