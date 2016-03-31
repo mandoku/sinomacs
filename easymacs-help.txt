@@ -36,8 +36,9 @@ Shft-Alt-F1	Open file or URL under the cursor
 
 F2 		Fix previous highlighted mispelling
 Shft-F2		Complete word from dictionary
-Ctrl-F2		Look up current word in on-line dictionary
-Alt-F2		Look up current word in on-line thesaurus
+Ctrl-F2		Insert a Unicode character by name
+Alt-F2		Look up current word in on-line dictionary
+Shft-Alt-F2	Look up current word in on-line thesaurus
 
 F3 		Complete the current word based on context
 Shft-F3		Copy a character from the line above

@@ -524,6 +524,23 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 
 ;;; XML
 
+;; For .xhtml files
+(setq auto-mode-alist
+      (cons '("\\.xhtml\\'" . nxml-mode) auto-mode-alist))
+(defun easymacs-xhtml-outline-level ()
+  (let ((tag (buffer-substring (match-beginning 1) (match-end 1))))
+    (if (eq (length tag) 2)
+	(- (aref tag 1) ?0)
+      0)))
+(defun easymacs-xhtml-extras ()
+  (make-local-variable 'outline-regexp)
+  (setq outline-regexp "\\s *<\\([h][1-6]\\|html\\|body\\|head\\)\\b")
+  (make-local-variable 'outline-level)
+  (setq outline-level 'easymacs-xhtml-outline-level)
+  (outline-minor-mode 1)
+  (hs-minor-mode 1))
+
+
 ;; For folding elements 
 (add-to-list 'hs-special-modes-alist
 	     '(nxml-mode
@@ -542,13 +559,38 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 	(error nil)))))
 (add-hook 'nxml-mode-hook #'hs-minor-mode)
 
+(defun easymacs-insert-tag (tag-name beg end)
+  (interactive "sTag name: \nr")
+  (if mark-active
+      (save-excursion
+	(goto-char beg)
+	(insert "<" tag-name ">")
+	(goto-char (+ end 2 (length tag-name)))
+	(insert "</" tag-name ">"))
+    (progn
+      (insert "<" tag-name ">")
+      (save-excursion
+	(insert "</" tag-name ">")))))
+
 (defun easymacs-nxml-mode-hook ()
   (bind-key (kbd "<f5>") 'rng-next-error nxml-mode-map)
   (bind-key (kbd "<S-f5>") 'rng-next-error nxml-mode-map)
-  (bind-key (kbd "<f9>") 'tei-html-docs-p5-element-at-point
-	    nxml-mode-map))
+  (bind-key (kbd "<f9>") 'tei-html-docs-p5-element-at-point nxml-mode-map)
+  (bind-key (kbd "<f10>") 'browse-url-of-buffer nxml-mode-map)
+  (bind-key (kbd "<f11>") 'easymacs-insert-tag nxml-mode-map)
+  (bind-key (kbd "<f12>") 'nxml-complete nxml-mode-map)
+  (bind-key (kbd "<S-f12>") 'nxml-finish-element nxml-mode-map)
+  (bind-key (kbd "<M-f12>") 'nxml-dynamic-markup-word nxml-mode-map)
+  (bind-key (kbd "<M-S-f12>") 'nxml-split-element nxml-mode-map)
+  (bind-key (kbd "<C-f12>") 'nxml-balanced-close-start-tag-block
+	    nxml-mode-map)
+  (bind-key (kbd "<C-S-f12>") 'nxml-balanced-close-start-tag-inline
+	    nxml-mode-map) 
 
-
+  (when (and (buffer-file-name)
+	     (string-match "\\.xhtml$"
+			   (file-name-sans-versions (buffer-file-name))))
+    (easymacs-xhtml-extras)))
 (add-hook 'nxml-mode-hook 'easymacs-nxml-mode-hook)
 
 
@@ -556,8 +598,6 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* [escape] 'keyboard-escape-quit)
 (bind-key* (kbd "<S-escape>") 'delete-other-windows)
 (bind-key* (kbd "C-`") 'other-frame)
-;;(bind-key* (kbd "<C-tab>") 'next-buffer)
-;;(bind-key* (kbd "<C-S-tab>") 'previous-buffer)
 (bind-key* (kbd "C-a") 'mark-whole-buffer)
 (bind-key* (kbd "C-s") 'save-buffer)
 (bind-key* (kbd "C-n") '(lambda () (interactive)
@@ -586,12 +626,13 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 ;; F2
 (bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
 (bind-key* (kbd "<S-f2>") 'ispell-complete-word)
-(bind-key* (kbd "<C-f2>")
+(bind-key* (kbd "<C-f2>") 'insert-char)
+(bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://www.wordnik.com/words/"
 				  (substring-no-properties
 				    (thing-at-point 'word))))))
-(bind-key* (kbd "<M-f2>")
+(bind-key* (kbd "<S-M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://moby-thesaurus.org/search?q="
 				  (substring-no-properties
