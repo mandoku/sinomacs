@@ -503,6 +503,7 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
   :diminish pcre-mode)
 
 (use-package re-builder
+  :ensure t
   :config (setq reb-re-syntax 'pcre)
   :bind* (("<S-f3>" . re-builder)
 	 :map reb-mode-map
@@ -615,6 +616,14 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (easymacs-xhtml-extras)))
 (add-hook 'nxml-mode-hook 'easymacs-nxml-mode-hook)
 
+;;; Markdown
+(use-package markdown-mode
+  :ensure t
+  :config (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  :bind (:map markdown-mode-map
+	      ("<f10>" . markdown-other-window)
+	      ("<f11>" . markdown-preview)
+	      ("<f12>" . markdown-live-preview-mode)))
 
 ;;; Global key-bindings
 (bind-key* [escape] 'keyboard-escape-quit)
