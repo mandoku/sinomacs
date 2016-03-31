@@ -78,16 +78,32 @@ Function keys F8 to F12 are reserved for commands that pertain to particular typ
 
 XML:
 
-
-
+F5		Next validation error
+Shft-F5 	Previous validation error
+F9		Look up element in TEI documentation
+F10		View file in a web browser
+F11		Insert tag or put it around selected text
+Ctrl-F11	Split current element
+F12 		Complete in context according to schema
+Shft-F12	Insert closing tag for current element	      
+Alt-F12		Markup current word
+Ctrl-F12	Finish an opening tag and add closing tag
+Shft-Ctrl-f12	As above, but in-line rather than block
 
 LaTeX:
 
+F5		Next compilation error
+Shft-F5 	Previous compilation error
 F12		Save and compile
 Shft-F12	Run next command
 F11		View PDF output
 Shft-F11	Jump to current location in PDF file
 F10		Complete the current LaTeX expression
+Alt-F10		Insert environment or surround selected text
+Shft-Alt-F10	Change current environment
+F9		Show help on LaTeX command at cursor
+Shft-F9		Search a multi-file document
+
 Ctrl-E		Insert \emph{} around text
 Ctrl-B		Insert \textbf{} around text
 Alt-p		Insert \textsc{} around text

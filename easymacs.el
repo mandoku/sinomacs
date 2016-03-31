@@ -367,7 +367,10 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
     (local-set-key (kbd "<f12>") 'easymacs-run-latex)
     (local-set-key (kbd "<S-f12>") 'TeX-command-master)
-    ))
+    (local-set-key (kbd "<M-f10>") 'LaTeX-environment)
+    (local-set-key (kbd "<M-S-f10>") '(lambda () (interactive)
+					(LaTeX-environment t)))
+    (local-set-key (kbd "<S-f9>")  'reftex-grep-document)))
 
 ;; Bibtex
 ;; Prompt for bibtex entry types
@@ -578,10 +581,10 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
   (bind-key (kbd "<f9>") 'tei-html-docs-p5-element-at-point nxml-mode-map)
   (bind-key (kbd "<f10>") 'browse-url-of-buffer nxml-mode-map)
   (bind-key (kbd "<f11>") 'easymacs-insert-tag nxml-mode-map)
+  (bind-key (kbd "<C-f11>") 'nxml-split-element nxml-mode-map)
   (bind-key (kbd "<f12>") 'nxml-complete nxml-mode-map)
   (bind-key (kbd "<S-f12>") 'nxml-finish-element nxml-mode-map)
   (bind-key (kbd "<M-f12>") 'nxml-dynamic-markup-word nxml-mode-map)
-  (bind-key (kbd "<M-S-f12>") 'nxml-split-element nxml-mode-map)
   (bind-key (kbd "<C-f12>") 'nxml-balanced-close-start-tag-block
 	    nxml-mode-map)
   (bind-key (kbd "<C-S-f12>") 'nxml-balanced-close-start-tag-inline
