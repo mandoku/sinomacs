@@ -107,6 +107,7 @@
       cua-read-only-cursor-color '(box . "red"))
 ;; Keep selection active after copy
 (setq cua-keep-region-after-copy t)
+(setq org-support-shift-select 'always)
 
 ;; Undo
 (use-package undo-tree
@@ -158,6 +159,7 @@
   (and (string-match "^\*" name)
        (not (string= name "*eshell*"))))
 (setq ido-ignore-buffers '("\\` " easymacs-ido-ignore))
+
 (require 'ibuffer)
 (require 'ibuf-ext)
 (add-to-list 'ibuffer-never-show-predicates "^\\*")
@@ -181,6 +183,11 @@ the mode doesn't support imenu."
 (setq imenu-max-items 50
       imenu-scanning-message nil
       imenu-auto-rescan t)
+
+(use-package drag-stuff
+  :ensure t
+  :diminish 'drag-stuff-mode
+  :config (drag-stuff-global-mode 1))
 
 ;; Programming tools
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -393,8 +400,8 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 		    (completing-read
 		     "Entry type (tab for list): " 
 		     (mapcar 'car bibtex-entry-field-alist))))))
-(add-hook 'bibtex-mode-hook (lambda ()
-			      (local-set-key (kbd "<f10>")
+(add-hook 'bibtex-mode-hook '(lambda ()
+			      (local-set-key (kbd "<f12>")
 					     'bibtex-clean-entry)
 			      (local-set-key (kbd "<f11>")
 					     'easymacs-insert-bibtex-entry)
