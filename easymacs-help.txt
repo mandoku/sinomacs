@@ -40,8 +40,8 @@ Ctrl-F2		Insert a Unicode character by name
 Alt-F2		Look up current word in on-line dictionary
 Shft-Alt-F2	Look up current word in on-line thesaurus
 
-F3 		Complete the current word based on context
-Shft-F3		Copy a character from the line above
+F3 		Complete the current word based on context; also try Alt-/
+Shft-F3		Copy a character from the line above 
 Ctrl-F3		Copy the line above
 Alt-F3		Comment line or region
 Shft-Alt-F3	Uncomment line or region
