@@ -12,6 +12,8 @@ Emacs has a reputation for complexity, archaism and idiosyncrasy, so it might se
 
 Easymacs is designed to turn Emacs into as familiar an application as possible, so that students can start using it right away.  Conventional keystrokes and familiar terminology are used for basic file manipulations.  More advanced Emacs functionality is assigned to function keys.  Some of these choices override standard defaults, but the full power of Emacs is still available to the student who wants to delve deeper.
 
+Easymacs is similar in principle to projects like [Emacs Starter Kit](http://xgarrido.github.io/emacs-starter-kit/starter-kit.html), but it supposes a narrower and less technically oriented audience.
+
 Easymacs comes with an installer that modifies the user's .emacs configuration file to run itself. It automatically installs a number of third-party packages, including adaptive-wrap, undo-tree, company, magit, auctex, pcre2el and re-builder.
 
 For a list of keybindings, see the file easymacs-help.txt, which is the page shown when Easymacs starts up.
