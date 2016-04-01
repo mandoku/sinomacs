@@ -182,12 +182,13 @@ the mode doesn't support imenu."
       imenu-scanning-message nil
       imenu-auto-rescan t)
 
-;; Programming aids
+;; Programming tools
 (add-hook 'prog-mode-hook 'linum-mode)
 
 (use-package magit
   :ensure t
-  :bind* ("<C-f6>" . magit-status))
+  :bind* ("<C-f6>" . magit-status)
+  :config (setq magit-diff-refine-hunk 'all))
 ;; To finish magit sub-editor
 (eval-after-load "with-editor"
     '(define-key with-editor-mode-map (kbd "<f12>") 'with-editor-finish))
@@ -221,6 +222,10 @@ the mode doesn't support imenu."
 (add-hook 'text-mode-hook #'outline-minor-mode)
 (diminish 'hs-minor-mode)
 (diminish 'outline-minor-mode)
+
+(use-package browse-kill-ring
+  :ensure t
+  :bind* ("<C-S-v>" . browse-kill-ring))
 
 ;;; Utility functions
 
