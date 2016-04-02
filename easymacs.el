@@ -145,7 +145,9 @@
 (use-package company
   :ensure t
   :diminish company-mode
-  :config (global-company-mode)
+  :config (progn
+	    (global-company-mode)
+	    (setq company-idle-delay 2))
   :bind* (("<f3>" . company-complete)
 	  :map company-active-map
 	  ("<escape>" . company-abort)))
