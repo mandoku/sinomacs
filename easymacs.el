@@ -194,6 +194,31 @@ the mode doesn't support imenu."
 ;; Programming tools
 (add-hook 'prog-mode-hook 'linum-mode)
 
+;; Python
+;; brew install python3
+;; pip install virtualenv rope jedi ipython nltk
+
+(use-package elpy
+  :ensure t
+  :config (progn
+	    (elpy-enable)
+	    (setq elpy-rpc-python-command "python3")
+	    (elpy-use-ipython)))
+;; :bind doesn't work
+(add-hook 'elpy-mode-hook
+	  '(lambda ()
+	     (local-set-key (kbd "<f9>") 'elpy-doc)
+	     (local-set-key (kbd "<f10>") 'elpy-check)
+	     (local-set-key (kbd "<f11>") 'elpy-shell-switch-to-shell)
+	     (local-set-key (kbd "<f12>") 'elpy-shell-send-region-or-buffer)))
+	  
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i --classic")
+
+(add-hook 'inferior-python-mode-hook
+	  '(lambda ()
+	     (local-set-key (kbd "<f11>") 'elpy-shell-switch-to-buffer)))
+
 (use-package magit
   :ensure t
   :bind* ("<C-f6>" . magit-status)
@@ -210,14 +235,6 @@ the mode doesn't support imenu."
 (require 'git-gutter-fringe)
 (global-git-gutter-mode 1)
 (setq git-gutter:update-interval 0)
-
-
-; (use-package python
-;   :mode ("\\.py\\'" . python-mode)
-;   :interpreter ("python" . python-mode)
-;   :config
-;   (when (executable-find "ipython")
-;     (setq python-shell-interpreter "ipython")))
   
 ;; Visible bookmarks
 (use-package bm :ensure t)
