@@ -203,14 +203,20 @@ the mode doesn't support imenu."
   :config (progn
 	    (elpy-enable)
 	    (setq elpy-rpc-python-command "python3")
-	    (elpy-use-ipython)))
+	    ;(elpy-use-ipython)
+	    ))
 ;; :bind doesn't work
 (add-hook 'elpy-mode-hook
 	  '(lambda ()
+	     (local-set-key (kbd "<f5>") 'elpy-flymake-next-error)
+	     (local-set-key (kbd "<S-f5>") 'elpy-flymake-previous-error)
 	     (local-set-key (kbd "<f9>") 'elpy-doc)
 	     (local-set-key (kbd "<f10>") 'elpy-check)
+	     (local-set-key (kbd "<S-f10>") 'elpy-format-code)
+	     (local-set-key (kbd "<C-f10>") 'elpy-refactor)
 	     (local-set-key (kbd "<f11>") 'elpy-shell-switch-to-shell)
-	     (local-set-key (kbd "<f12>") 'elpy-shell-send-region-or-buffer)))
+	     (local-set-key (kbd "<f12>")
+			    'elpy-shell-send-region-or-buffer)))
 	  
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --classic")
@@ -307,6 +313,11 @@ the mode doesn't support imenu."
   (end-of-line)
   (set-mark (line-beginning-position)))
 
+(defun easymacs-last-buffer ()
+  (interactive)
+  (switch-to-buffer
+   (other-buffer (current-buffer) 1)))
+
 ;;; Mac stuff
 (when (memq window-system '(mac ns))
   (setq ns-pop-up-frames nil
@@ -331,6 +342,9 @@ the mode doesn't support imenu."
 ;;; Auctex
 (use-package tex-site
   :ensure auctex)
+(use-package company-auctex
+  :ensure t
+  :config (company-auctex-init))
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master 'dwim)
@@ -400,15 +414,19 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (local-set-key (kbd "M-p") 'LaTeX-insert-textsc)
     (local-set-key (kbd "M-f") 'LaTeX-insert-footnote)
     (local-set-key (kbd "<f9>") 'easymacs-auctex-help-at-point)
-    (local-set-key (kbd "<f10>") 'TeX-complete-symbol)
-    (local-set-key (kbd "<f11>") 'TeX-view)
-    (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
-    (local-set-key (kbd "<f12>") 'easymacs-run-latex)
-    (local-set-key (kbd "<S-f12>") 'TeX-command-master)
+    (local-set-key (kbd "<S-f9>")  'reftex-grep-document)
+    (local-set-key (kbd "<f10>") 'LaTeX-close-environment)
+    (local-set-key (kbd "<S-f10>") 'TeX-complete-symbol)
     (local-set-key (kbd "<M-f10>") 'LaTeX-environment)
     (local-set-key (kbd "<M-S-f10>") '(lambda () (interactive)
 					(LaTeX-environment t)))
-    (local-set-key (kbd "<S-f9>")  'reftex-grep-document)))
+    ;; May be overridden for pdf-tools
+    (local-set-key (kbd "<f11>") 'TeX-view)
+    (local-set-key (kbd "<C-f11>") 'TeX-view)
+    (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
+    (local-set-key (kbd "<f12>") 'easymacs-run-latex)
+    (local-set-key (kbd "<S-f12>") 'TeX-command-master)))
+
 
 ;; Bibtex
 ;; Prompt for bibtex entry types
@@ -740,9 +758,9 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
 (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
-;;; Show replacement splash page
-(kill-buffer (get-buffer "*scratch*"))
-;; Workaround for a mac bug
+;;; Show help screen at startup
+
+;; Workaround for a frame-related mac bug
 (find-file-other-frame
  (concat easymacs-dir "easymacs-help.txt"))
 (delete-other-frames)
