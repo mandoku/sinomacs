@@ -17,3 +17,21 @@ Easymacs is similar in principle to projects like [Emacs Starter Kit](http://xga
 Easymacs comes with an installer that modifies the user's .emacs configuration file to run itself. It automatically installs a number of third-party packages, including adaptive-wrap, undo-tree, company, magit, auctex, pcre2el and re-builder.
 
 For a list of keybindings, see the file easymacs-help.txt, which is the page shown when Easymacs starts up.
+
+Installation
+------------
+
+
+  1. Install Emacs, version 24.4 or greater:
+
+	* Windows: [Download Emacs](https://ftp.gnu.org/gnu/emacs/windows/).  The filename will look something like emacs-24.5-bin-i686-mingw32.zip.  Unzip the file in a convenient place and start Emacs by going to the bin folder and double-clicking on emacs.exe.  You may want to set up a short-cut.
+	
+	* Mac: [Download Emacs](https://emacsformacosx.com).  Install and run the application as normal.
+	
+	* Linux: Install via your package manager.
+	
+  2. Get the Easymacs zip file: [Download Easymacs](https://github.com/pjheslin/easymacs/archive/master.zip).  Unzip it in a convenient location.
+  
+  3. Run Emacs and click on the menu option File->Open File.  Navigate to the folder in which you just unzipped Easymacs and open the file called INSTALL.el.  Follow the directions on screen, which will tell you to select the menu item Emacs-Lisp->Evaluate Buffer.
+  
+  4. Easymacs is now installed.  You may want to install some auxiliary programmes such as [Hunspell](https://hunspell.github.io) for spell-checking.  For Macs, [Homebrew](http://brew.sh) is the best way to do this.
