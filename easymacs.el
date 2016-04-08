@@ -77,11 +77,8 @@
 (require 'saveplace)
 (setq-default save-place t)
 
-;; set current buffer's filename, and full path in titlebar
-;(setq frame-title-format '("Emacs %b" (buffer-file-name ": %f")))
-;; Show path info in buffers with otherwise identical filenames
 (require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward)
+(setq uniquify-buffer-name-style 'forward)
 ;; Make very frequent autosaves
 (setq auto-save-interval 5)
 ;; Make all backups in a single directory
@@ -203,6 +200,8 @@ the mode doesn't support imenu."
   :config (progn
 	    (elpy-enable)
 	    (setq elpy-rpc-python-command "python3")
+	    ;; Why does this default to being on for all major modes?
+	    (pyvenv-mode -1)
 	    ;(elpy-use-ipython)
 	    ))
 ;; :bind doesn't work
@@ -356,6 +355,7 @@ the mode doesn't support imenu."
 (setq reftex-plug-into-AUCTeX t)
 (setq TeX-source-correlate-method 'synctex)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(setq TeX-source-correlate-start-server t)
 (add-hook 'LaTeX-mode-hook '(lambda ()
 			      (TeX-fold-mode 1)
 			      ;; For folding comments
@@ -420,9 +420,9 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
     (local-set-key (kbd "<M-f10>") 'LaTeX-environment)
     (local-set-key (kbd "<M-S-f10>") '(lambda () (interactive)
 					(LaTeX-environment t)))
-    ;; May be overridden for pdf-tools
     (local-set-key (kbd "<f11>") 'TeX-view)
-    (local-set-key (kbd "<C-f11>") 'TeX-view)
+    ;; Needs pdf-tools
+    (local-set-key (kbd "<C-f11>") 'easymacs-latex-pdf-frame)
     (local-set-key (kbd "<S-f11>") 'pdf-sync-forward-search)
     (local-set-key (kbd "<f12>") 'easymacs-run-latex)
     (local-set-key (kbd "<S-f12>") 'TeX-command-master)))
