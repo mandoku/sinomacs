@@ -58,8 +58,8 @@ Ctrl-F5		Toggle bookmark
 Alt-F5		Go to next bookmark
 Shft-Alt-F5	Go to previous bookmark
 
-F6		Open up command line (eshell) and jump back
-Ctrl-F6		Interface to Git (magit)
+F6		Interface to Git (magit)
+Ctrl-F6		Open up command line (eshell) or jump back from eshell
 Alt-F6 		Go to next change (with respect to Git repository)
 Shft-Alt-F6  	Go to previous change (with respect to Git repository)
 
