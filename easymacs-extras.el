@@ -2,10 +2,12 @@
 
 ;;; PDF-tools as LaTeX viewer
 
+;; This is very slow to load, so defer.
 (use-package pdf-tools
-  :ensure t)
+  :ensure t
+  :defer t)
 
-;; Done on demand, since require first time is slooow.
+;; Done on demand, since require first time is so slow.
 (add-to-list 'auto-mode-alist
 	     '("\\.pdf\\'" .
 	       (lambda ()
@@ -69,8 +71,8 @@
 	  '(lambda ()
 	     (local-set-key (kbd "<f11>") 'elpy-shell-switch-to-buffer)))
 
-;; Installed by elpy as a dependency, so we might as well turn it on
-(use-package yasnippet
-  :ensure t
-  :config (yas-global-mode 1))
+;; Somewhat annoying package
+;(use-package yasnippet
+;  :ensure t
+;  :config (yas-global-mode 1))
 
