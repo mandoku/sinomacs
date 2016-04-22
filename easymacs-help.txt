@@ -82,6 +82,7 @@ F5		Next validation error
 Shft-F5 	Previous validation error
 F9		Look up element in TEI documentation
 F10		View file in a web browser
+Shft-F10	Show Xpath of current element
 F11		Insert tag or put it around selected text
 Ctrl-F11	Split current element
 F12 		Complete in context according to schema

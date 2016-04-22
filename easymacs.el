@@ -612,11 +612,31 @@ Any files \\input by `TeX-master-file' are also saved without prompting."
       (save-excursion
 	(insert "</" tag-name ">")))))
 
+;; from emacswiki
+(defun nxml-where ()
+      "Display the hierarchy of XML elements the point is on as a path."
+      (interactive)
+      (let ((path nil))
+        (save-excursion
+          (save-restriction
+            (widen)
+            (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                        (condition-case nil
+                            (progn
+                              (nxml-backward-up-element) ; always returns nil
+                              t)
+                          (error nil)))
+              (setq path (cons (xmltok-start-tag-local-name) path)))
+            (if (called-interactively-p t)
+                (message "/%s" (mapconcat 'identity path "/"))
+              (format "/%s" (mapconcat 'identity path "/")))))))
+
 (defun easymacs-nxml-mode-hook ()
   (bind-key (kbd "<f5>") 'rng-next-error nxml-mode-map)
   (bind-key (kbd "<S-f5>") 'rng-next-error nxml-mode-map)
   (bind-key (kbd "<f9>") 'tei-html-docs-p5-element-at-point nxml-mode-map)
   (bind-key (kbd "<f10>") 'browse-url-of-buffer nxml-mode-map)
+  (bind-key (kbd "<S-f10>") 'nxml-where nxml-mode-map)
   (bind-key (kbd "<f11>") 'easymacs-insert-tag nxml-mode-map)
   (bind-key (kbd "<C-f11>") 'nxml-split-element nxml-mode-map)
   (bind-key (kbd "<f12>") 'nxml-complete nxml-mode-map)
