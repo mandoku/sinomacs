@@ -5,12 +5,16 @@
   :ensure t
   :defer t)
 
-;; Done on demand, since require first time is so slow.
+(defun easymacs-pdf-tools-require ()
+  (unless (featurep 'pdf-tools)
+    (message "Please wait: initializing PDF Tools")
+    (require 'pdf-tools)
+    (pdf-tools-install)))
+
 (add-to-list 'auto-mode-alist
 	     '("\\.pdf\\'" .
 	       (lambda ()
-		 (require 'pdf-tools)
-		 (pdf-tools-install)
+		 (easymacs-pdf-tools-require)
 		 (add-hook 'pdf-tools-enabled-hook 'auto-revert-mode))))
 
 (add-hook 'TeX-after-compilation-finished-functions
@@ -18,9 +22,8 @@
 (setq revert-without-query (quote (".*.pdf")))
 
 (defun easymacs-TeX-pdf-tools-sync-view ()
-    ;; Delayed require
-    (require 'pdf-tools)
-    (TeX-pdf-tools-sync-view))
+  (easymacs-pdf-tools-require)
+  (TeX-pdf-tools-sync-view))
 
 (setq TeX-view-program-list
       '(("PDF Tools" easymacs-TeX-pdf-tools-sync-view)))
