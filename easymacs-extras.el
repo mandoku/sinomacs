@@ -1,5 +1,7 @@
 ;;; Some additions to Easymacs that are for advanced users or that depend upon external applications
 
+;; Python
+
 ;; Elpy + yasnippet is a bit of a heavyweight install and beginners
 ;; might do better with Idle, so this is an extra.
 
@@ -44,6 +46,7 @@
 ;  :config (yas-global-mode 1))
 
 ;;; Auctex
+
 (use-package tex-site
   :ensure auctex)
 (use-package company-auctex
