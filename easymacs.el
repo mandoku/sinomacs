@@ -25,8 +25,12 @@
 ;;; Set-up for packages
 (require 'package)
 (setq package-enable-at-startup nil)
+;; No TLS library for https on Windows
 (add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
+	     (if (eq system-type 'windows-nt)
+		 '("melpa" . "http://melpa.org/packages/")
+	       '("melpa" . "https://melpa.org/packages/"))
+	     t)
 (package-initialize)
 ;; Set up use-package
 (unless (package-installed-p 'use-package)
