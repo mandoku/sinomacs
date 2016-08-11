@@ -85,6 +85,9 @@
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
+(setq frame-title-format 
+      '(buffer-file-name "%f" (dired-directory dired-directory "%b")))
+
 ;; Make very frequent autosaves
 (setq auto-save-interval 5)
 ;; Make all backups in a single directory
