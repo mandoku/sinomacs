@@ -71,6 +71,8 @@
 ;; Put current line number and column in the mode line
 (line-number-mode 1)
 (setq column-number-mode t)
+; For visual-line-mode
+(setq line-number-display-limit-width 2000000)
 ;; Use menu-bar
 (menu-bar-mode 1)
 ;; Paste at cursor, rather than pointer
