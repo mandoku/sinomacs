@@ -99,6 +99,8 @@
 	    (diminish 'visual-line-mode)))
 (global-visual-line-mode)
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
+;; Tabs are evil and break adaptive-wrap
+(setq-default indent-tabs-mode nil)
 
 ;; CUA-mode
 (cua-mode t)
@@ -148,7 +150,7 @@
   :diminish company-mode
   :config (progn
 	    (global-company-mode)
-	    (setq company-idle-delay 2))
+	    (setq company-idle-delay nil))
   :bind* (("<f3>" . company-complete)
 	  :map company-active-map
 	  ("<escape>" . company-abort)))
@@ -165,12 +167,9 @@
 
 (require 'ibuffer)
 (require 'ibuf-ext)
-(add-to-list 'ibuffer-never-show-predicates "^\\*")
 ;; Simplified ibuffer display
 (setq ibuffer-formats
       '((mark modified read-only " "
-	      (filename-and-process 0 -1 :left :elide))
-	(mark modified read-only " "
 	      (name 0 -1 :left :elide))))
 ;; Make ibuffer refresh after every command
 (add-hook 'ibuffer-mode-hook (lambda () (ibuffer-auto-mode 1)))
@@ -461,9 +460,11 @@ the mode doesn't support imenu."
 
 ;;; XML
 
-;; For .xhtml files
 (setq auto-mode-alist
-      (cons '("\\.xhtml\\'" . nxml-mode) auto-mode-alist))
+      (cons '("\\.x?html\\'" . nxml-mode) auto-mode-alist))
+(setq magic-mode-alist
+          (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
+
 (defun easymacs-xhtml-outline-level ()
   (let ((tag (buffer-substring (match-beginning 1) (match-end 1))))
     (if (eq (length tag) 2)
