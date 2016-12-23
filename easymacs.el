@@ -203,7 +203,7 @@ the mode doesn't support imenu."
 
 (use-package magit
   :ensure t
-  :bind* ("<f6>" . magit-status)
+  :bind* ("<C-f6>" . magit-status)
   :config (setq magit-diff-refine-hunk 'all))
 ;; To finish magit sub-editor
 (eval-after-load "with-editor"
@@ -637,7 +637,7 @@ the mode doesn't support imenu."
 ;; F6
 ;; F6 is magit-status, defined above
 ;; (S-)M-F6 is git-gutter:next-hunk and previous-hunk
-(bind-key* (kbd "<C-f6>")
+(bind-key* (kbd "<f6>")
 	   '(lambda () (interactive)
 	      (if (string= (buffer-name) "*eshell*")
 		  (switch-to-buffer (other-buffer (current-buffer)))
