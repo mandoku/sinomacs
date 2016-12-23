@@ -22,7 +22,8 @@ Alt-Z	Traverse Undo tree
 Window manipulation (Use F1 to switch between open files):
 
 Shft-escape	Remove pop-up window (same as F4; Shft-F4 switches to pop-up)
-Shft-Ctrl-N	New window
+Shft-Ctrl-N	Open new window
+Shft-Ctrl-W	Close window
 Ctrl-`		Switch window
 
 There are also some convenient function keys:

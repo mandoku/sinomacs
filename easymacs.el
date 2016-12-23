@@ -583,7 +583,8 @@ the mode doesn't support imenu."
 				   (call-interactively 'find-file-existing))))
 (bind-key* (kbd "C-q") 'save-buffers-kill-emacs)
 (bind-key* (kbd "C-w") 'easymacs-kill-buffer)
-(bind-key* (kbd "C-S-w") 'easymacs-kill-some-buffers)
+(bind-key* (kbd "S-C-w") 'delete-frame)
+(bind-key* (kbd "M-w") 'easymacs-kill-some-buffers)
 
 ;;; Function keys
 
