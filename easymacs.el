@@ -423,13 +423,17 @@ the mode doesn't support imenu."
 
 (use-package re-builder
   :ensure t
-  :config (setq reb-re-syntax 'pcre)
-  :bind* (("<S-f3>" . re-builder)
-	 :map reb-mode-map
-	 ("<f2>" . reb-next-match)
-	 ("<S-f2>" . reb-prev-match)
-	 ("C-q" . reb-quit)
-	 ("C-c" . reb-copy)))
+  :config (setq reb-re-syntax 'pcre))
+;; use-package bind does not work here
+(add-hook 'reb-mode-hook (lambda ()
+                           (local-set-key (kbd "<f5>")
+                                          'reb-next-match)
+                           (local-set-key (kbd "<S-f5>")
+                                          'reb-prev-match)
+                           (local-set-key (kbd "C-b")
+                                          'reb-change-target-buffer)))
+
+
 
 ;;; Elisp
 (defun easymacs-elisp-help ()
