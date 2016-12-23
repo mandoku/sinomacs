@@ -194,7 +194,8 @@ the mode doesn't support imenu."
 (use-package drag-stuff
   :ensure t
   :diminish 'drag-stuff-mode
-  :config (drag-stuff-global-mode 1))
+  :config (progn (drag-stuff-global-mode 1)
+                 (drag-stuff-define-keys)))
 
 ;; Programming tools
 (add-hook 'prog-mode-hook 'linum-mode)
