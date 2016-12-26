@@ -235,6 +235,50 @@ the mode doesn't support imenu."
   :ensure t
   :bind* ("<C-S-v>" . browse-kill-ring))
 
+;; Improve Scrolling Behaviour
+
+;; smooth-scrolling.el keeps several lines of context visible when the cursor nears the top or bottom of the screen, and when the cursor hits that limit it scrolls by a single line rather than jumping by a page.
+
+ (use-package smooth-scrolling
+   :ensure t
+   :config (progn (smooth-scrolling-mode 1)
+                  (setq smooth-scroll-margin 5)))
+
+;; smooth-scroll.el has a very different purpose: it implements a scrolling motion when paging up and down.  But this does not work well with the reversible paging below, and it is really just a visual effect.  But the functions to scroll without moving the cursor are useful.
+
+(use-package smooth-scroll
+  :ensure t
+  :config (smooth-scroll-mode nil)
+  :bind* (("<C-down>"  . scroll-up-1)
+          ("<C-up>"    . scroll-down-1)
+          ("<C-left>"  . scroll-right-1)
+          ("<C-right>" . scroll-left-1)))
+
+;; Code adapted from Emacswiki/Stack Overflow to implement reversible paging.  Paging down and then back up puts you back in the same spot where you started.
+
+(defun sfp-page-down (&optional arg)
+  (interactive "^P")
+  (setq this-command 'next-line)
+  (let ((smooth-scrolling-mode nil))
+    (next-line
+     (- (window-text-height)
+        next-screen-context-lines))))
+(put 'sfp-page-down 'isearch-scroll t)
+(put 'sfp-page-down 'CUA 'move)
+
+(defun sfp-page-up (&optional arg)
+  (interactive "^P")
+  (setq this-command 'previous-line)
+  (let ((smooth-scrolling-mode nil))
+    (previous-line
+     (- (window-text-height)
+        next-screen-context-lines))))
+(put 'sfp-page-up 'isearch-scroll t)
+(put 'sfp-page-up 'CUA 'move)
+
+(global-set-key [next] 'sfp-page-down)
+(global-set-key [prior] 'sfp-page-up)
+
 ;;; Utility functions
 
 (defun unfill-paragraph (&optional region)
