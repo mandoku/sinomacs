@@ -392,6 +392,34 @@ the mode doesn't support imenu."
   (switch-to-buffer
    (other-buffer (current-buffer) 1)))
 
+;;; Word count
+;; Pinched from http://www.dr-qubit.org/emacs.php
+
+(setq mode-line-position (assq-delete-all 'wc-mode mode-line-position))
+(setq mode-line-position
+      (append
+       mode-line-position
+       '((wc-mode
+	  (6 (:eval (if (use-region-p)
+			(format " %d,%d,%d"
+				(abs (- (point) (mark)))
+				(count-words-region (point) (mark))
+				(abs (- (line-number-at-pos (point))
+					(line-number-at-pos (mark)))))
+		      (format " %d,%d,%d"
+			      (- (point-max) (point-min))
+			      (count-words-region (point-min) (point-max))
+			      (line-number-at-pos (point-max))))))
+	  nil))))
+(define-minor-mode wc-mode
+  "Toggle word-count mode.
+With no argument, this command toggles the mode.
+A non-null prefix argument turns the mode on.
+A null prefix argument turns it off.
+
+When enabled, the total number of characters, words, and lines is
+displayed in the mode-line.")
+
 ;;; Mac stuff
 (when (memq window-system '(mac ns))
   (setq ns-pop-up-frames nil
