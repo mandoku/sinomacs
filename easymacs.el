@@ -534,6 +534,9 @@ displayed in the mode-line.")
           (isearch-repeat-forward)))
     ad-do-it))
 
+;; Important for long lines
+(setq grep-highlight-matches 'always)
+
 ;;; Regexps: re-builder and pcre2el
 (use-package pcre2el
   :ensure t
@@ -708,6 +711,9 @@ displayed in the mode-line.")
 (bind-key* (kbd "C-w") 'easymacs-kill-buffer)
 (bind-key* (kbd "S-C-w") 'delete-frame)
 (bind-key* (kbd "M-w") 'easymacs-kill-some-buffers)
+
+(bind-key* (kbd "<end>") 'end-of-visual-line)
+(bind-key* (kbd "<home>") 'beginning-of-visual-line)
 
 ;;; Function keys
 
