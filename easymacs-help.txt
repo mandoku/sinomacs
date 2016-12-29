@@ -61,6 +61,7 @@ Shft-Alt-F5	Go to previous bookmark
 
 F6		Open up command line (eshell) or jump back from eshell
 Ctrl-F6		Interface to Git (magit)
+Shft-Ctrl-F6	Show coloured word diff against last Git commit
 Alt-F6 		Go to next change (with respect to Git repository)
 Shft-Alt-F6  	Go to previous change (with respect to Git repository)
 

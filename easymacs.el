@@ -217,7 +217,24 @@ the mode doesn't support imenu."
 (require 'git-gutter-fringe)
 (global-git-gutter-mode 1)
 (setq git-gutter:update-interval 0)
-  
+
+(defun easymacs-git-wdiff ()
+  (interactive)
+  (let ((inhibit-read-only t)
+        (coding-system-for-read 'utf-8-unix)
+        (coding-system-for-write 'utf-8-unix)
+        (git-command (read-string "Git command: "
+                                  "git diff --color-words HEAD")))
+    (shell-command git-command "*git-wdiff*")
+    (switch-to-buffer "*git-wdiff*")
+    (delete-other-windows)
+    (ansi-color-apply-on-region (point-min) (point-max))
+    (visual-line-mode 1)
+    (diff-mode)
+    (read-only-mode)))
+(bind-key* (kbd "<C-S-f6>") 'easymacs-git-wdiff)
+
+
 ;; Visible bookmarks
 (use-package bm :ensure t)
 
@@ -684,7 +701,7 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<C-f5>") 'bm-toggle)
 
 ;; F6
-;; F6 is magit-status, defined above
+;; C-F6 is magit-status, defined above
 ;; (S-)M-F6 is git-gutter:next-hunk and previous-hunk
 (bind-key* (kbd "<f6>")
 	   '(lambda () (interactive)
