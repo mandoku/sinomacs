@@ -236,7 +236,34 @@ the mode doesn't support imenu."
 
 
 ;; Visible bookmarks
-(use-package bm :ensure t)
+
+(use-package bm
+         :ensure t
+         :demand t
+         :init
+         (setq bm-restore-repository-on-load t)
+         :config
+         (setq bm-highlight-style 'bm-highlight-only-fringe)
+         (setq bm-cycle-all-buffers t)
+         (setq bm-repository-file (expand-file-name "~/.emacs.d/bm-repository"))
+         (setq-default bm-buffer-persistence t)
+         (add-hook' after-init-hook 'bm-repository-load)
+         (add-hook 'find-file-hooks 'bm-buffer-restore)
+         (add-hook 'kill-buffer-hook #'bm-buffer-save)
+         (add-hook 'kill-emacs-hook #'(lambda nil
+                                          (bm-buffer-save-all)
+                                          (bm-repository-save)))
+         (add-hook 'after-save-hook #'bm-buffer-save)
+         (add-hook 'find-file-hooks   #'bm-buffer-restore)
+         (add-hook 'after-revert-hook #'bm-buffer-restore)
+         (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+         (global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
+         (global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
+         (global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+         :bind (("<f5>" . bm-next)
+                ("S-<f5>" . bm-previous)
+                ("C-<f5>" . bm-toggle)))
+
 
 ;; Folding for fold-dwim
 (setq hs-isearch-open t)
@@ -693,12 +720,9 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
-;; We want F5 and S-F5 to be overridden 
-(bind-key (kbd "<f5>") 'next-error)
-(bind-key (kbd "<S-f5>") 'previous-error)
-(bind-key* (kbd "<M-f5>") 'bm-next)
-(bind-key* (kbd "<M-S-f5>") 'bm-previous)
-(bind-key* (kbd "<C-f5>") 'bm-toggle)
+;; We want M-F5 and M-S-F5 to be overridden 
+(bind-key (kbd "<M-f5>") 'next-error)
+(bind-key (kbd "<M-S-f5>") 'previous-error)
 
 ;; F6
 ;; C-F6 is magit-status, defined above
