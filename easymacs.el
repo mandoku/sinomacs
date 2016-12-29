@@ -121,8 +121,7 @@
 (use-package redo+
    :ensure t
    :bind* (("C-z" . undo)
- 	 ("C-S-z" . undo-tree-redo)
- 	 ("M-z" . undo-tree-visualize)))
+ 	 ("C-S-z" . redo)))
 
 ;; Enable recently-opened files menu
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
