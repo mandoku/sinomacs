@@ -285,14 +285,16 @@ the mode doesn't support imenu."
 
  (use-package smooth-scrolling
    :ensure t
+   :diminish 'smooth-scrolling-mode
    :config (progn (smooth-scrolling-mode 1)
                   (setq smooth-scroll-margin 5)))
 
-;; smooth-scroll.el has a very different purpose: it implements a scrolling motion when paging up and down.  But this does not work well with the reversible paging below, and it is really just a visual effect.  But the functions to scroll without moving the cursor are useful.
+;; smooth-scroll.el has a very different purpose: it implements a scrolling motion when paging up and down.  But this does not work well with the reversible paging below, and it is really just a visual effect; so it is not enabled here.  But the functions to scroll without moving the cursor are useful.
 
 (use-package smooth-scroll
   :ensure t
-  :config (smooth-scroll-mode nil)
+  :diminish 'smooth-scroll-mode
+  :config (smooth-scroll-mode -1)
   :bind* (("<C-down>"  . scroll-up-1)
           ("<C-up>"    . scroll-down-1)
           ("<C-left>"  . scroll-right-1)
@@ -317,6 +319,7 @@ the mode doesn't support imenu."
     (previous-line
      (- (window-text-height)
         next-screen-context-lines))))
+
 (put 'sfp-page-up 'isearch-scroll t)
 (put 'sfp-page-up 'CUA 'move)
 
