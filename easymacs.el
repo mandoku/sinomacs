@@ -117,15 +117,12 @@
 (setq cua-keep-region-after-copy t)
 (setq org-support-shift-select 'always)
 
-;; Undo
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :config
-  (global-undo-tree-mode 1)
-  :bind* (("C-z" . undo-tree-undo)
-	 ("C-S-z" . undo-tree-redo)
-	 ("M-z" . undo-tree-visualize)))
+;; redo+ -- simple, linear undo/redo
+(use-package redo+
+   :ensure t
+   :bind* (("C-z" . undo)
+ 	 ("C-S-z" . undo-tree-redo)
+ 	 ("M-z" . undo-tree-visualize)))
 
 ;; Enable recently-opened files menu
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!

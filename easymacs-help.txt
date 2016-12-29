@@ -17,7 +17,6 @@ Ctrl-V 	Paste
 Ctrl-A	Select all
 Ctrl-D	Select current word (then Ctrl-F will search for it)
 Ctrl-Z	Undo (shift to Redo)
-Alt-Z	Traverse Undo tree
 
 Window manipulation (Use F1 to switch between open files):
 
