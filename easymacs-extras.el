@@ -69,16 +69,21 @@
 			      ;; For folding comments
 			      (hs-minor-mode 1)))
 
+; (defun LaTeX-insert-footnote ()
+;   "Insert a \\footnote{} macro in a LaTeX-document."
+;   (interactive)
+;   (TeX-insert-macro "footnote")
+;   (insert "\n")
+;   (forward-char)
+;   (insert " %")
+;   (unless (looking-at "\n")
+;     (insert "\n"))
+;   (backward-char 4))
+
 (defun LaTeX-insert-footnote ()
   "Insert a \\footnote{} macro in a LaTeX-document."
   (interactive)
-  (TeX-insert-macro "footnote")
-  (insert "\n")
-  (forward-char)
-  (insert " %")
-  (unless (looking-at "\n")
-    (insert "\n"))
-  (backward-char 4))
+  (TeX-insert-macro "footnote"))
 
 (defun LaTeX-insert-emph ()
   "Insert an \\emph{} macro in a LaTeX-document."
