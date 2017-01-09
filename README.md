@@ -38,7 +38,7 @@ Installation
 	
 	* Linux: Install via your package manager.
 	
-  2. Get the Easymacs zip file: [Download Easymacs](https://github.com/pjheslin/easymacs/archive/master.zip).  Unzip it in a convenient location.
+  2. Get the Easymacs zip file: Use the green download button above or [get the Easymacs Mandoku archive from ](http://www.mandoku.org/data/easymacs-mandoku.zip).  Unzip it in a convenient location.
   
   3. Run Emacs and click on the menu option File->Open File.  Navigate to the folder in which you just unzipped Easymacs and open the file called INSTALL.el.  Follow the directions on screen, which will tell you to select the menu item Emacs-Lisp->Evaluate Buffer.
   
