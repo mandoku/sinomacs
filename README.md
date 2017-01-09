@@ -1,7 +1,15 @@
-Easymacs
-========
+Easymacs Mandoku
+================
 
-Easymacs is a configuration for Emacs designed for teaching markup and programming, particularly for the digital humanities.  Emacs provides a number of essential tools in a single, open-source, cross-platform learning environment which can be installed easily (even in a classroom where one does not have administrative rights).  In one package, it provides:
+Easymacs is a configuration for Emacs designed for teaching markup and
+programming, particularly for the digital humanities.  Easymacs
+Mandoku is a fork of of
+[Easymacs](https://github.com/pjheslin/easymacs) by Peter Heslin,
+which adds [Mandoku](http:/www.mandoku.org) to the existing
+configuration. Emacs provides a number of essential tools in a single,
+open-source, cross-platform learning environment which can be
+installed easily (even in a classroom where one does not have
+administrative rights).  In one package, it provides:
 
   * A schema-aware, validating XML editor (nxml-mode)
   * A platform-independent command line for running programs (eshell)
