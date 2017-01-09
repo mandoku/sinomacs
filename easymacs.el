@@ -199,7 +199,8 @@ the mode doesn't support imenu."
 
 (use-package magit
   :ensure t
-  :bind* ("<C-f6>" . magit-status)
+  :bind ("C-x g" . magit-status)
+;  :bind* ("<C-f6>" . magit-status)
   :config (setq magit-diff-refine-hunk 'all))
 ;; To finish magit sub-editor
 (eval-after-load "with-editor"
@@ -678,6 +679,34 @@ displayed in the mode-line.")
 			   (file-name-sans-versions (buffer-file-name))))
     (easymacs-xhtml-extras)))
 (add-hook 'nxml-mode-hook 'easymacs-nxml-mode-hook)
+;;; Mandoku
+(use-package gh
+  :ensure t)
+(use-package github-clone
+  :init (setq github-clone-url-slot :clone-url)
+  :ensure t)
+(use-package mandoku
+  :init (setq mandoku-base-dir "~/krp/")
+  (setq org-return-follows-link t)
+  (setq mandoku-do-remote t)
+  (setq mandoku-string-limit 10)
+  (setq mandoku-ngram-n 4)
+  (setq mandoku-index-display-limit 2000)
+  (setq mandoku-repositories-alist
+	'(("KR" "http://www.kanripo.org/api/v1.0") ))
+  (autoload 'mandoku-view-mode "mandoku" nil t)
+  (setq org-startup-folded 'showall)
+  :config
+  (mandoku-initialize)
+  (define-key mandoku-view-mode-map (kbd "C-c i")  'mandoku-open-image-at-page)
+  (define-key mandoku-view-mode-map (kbd "C-c d")  'mandoku-get-remote-text-now)
+  :bind (("<f6>" . mandoku-search-text)
+	 ("<f7>"  . mandoku-search-titles)
+	 ("S-<f6>" . mandoku-search-user-text)
+	 ("S-<f7>" . mandoku-show-catalog))
+  )
+
+
 
 ;;; Markdown
 (use-package markdown-mode
