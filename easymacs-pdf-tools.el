@@ -5,6 +5,15 @@
   :ensure t
   :defer t)
 
+(use-package org-pdfview
+  :config
+  (eval-after-load 'org '(require 'org-pdfview))
+  (delete '("\\.pdf\\'" . default) org-file-apps)
+  ;; this is for org version 9.0
+  (add-to-list 'org-file-apps '("\\.pdf\\'" . (lambda (file link) (org-pdfview-open link))))
+  (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . (lambda (file link) (org-pdfview-open link))))
+  )
+
 (defun easymacs-pdf-tools-require ()
   (unless (featurep 'pdf-tools)
     (message "Please wait: initializing PDF Tools")
