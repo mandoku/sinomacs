@@ -42,4 +42,4 @@ Installation
   
   3. Run Emacs and click on the menu option File->Open File.  Navigate to the folder in which you just unzipped Easymacs and open the file called INSTALL.el.  Follow the directions on screen, which will tell you to select the menu item Emacs-Lisp->Evaluate Buffer.
   
-  4. Easymacs is now installed.  You may want to install some auxiliary programmes such as [Hunspell](https://hunspell.github.io) for spell-checking.  For Macs, [Homebrew](http://brew.sh) is the best way to do this.
+  4. Easymacs is now installed.  You may want to install some auxiliary programmes such as [Hunspell](https://hunspell.github.io) for spell-checking.  qFor Macs, [Homebrew](http://brew.sh) is the best way to do this.
