@@ -1,0 +1,112 @@
+This is Easymacs, an easy to use configuration of the Emacs editor for Digital Humanities.  Many basic file operations have familiar keystrokes using the control key (or the Mac command key).  
+
+Ctrl-N	New file (you have to give it a name before editing)
+Ctrl-O	Open file
+Ctrl-S	Save file
+Ctrl-W	Close file
+Ctrl-Q 	Quit
+Ctrl-F  Find (repeat to find next; shift to go backwards)
+Crtl-R  Replace (shift to do it without asking)
+escape	Cancel current command
+
+Select text by holding down the shift key and moving the cursor (Ctrl-Enter will switch to rectangular selection mode).
+
+Ctrl-X  Cut
+Ctrl-C 	Copy
+Ctrl-V 	Paste
+Ctrl-A	Select all
+Ctrl-D	Select current word (then Ctrl-F will search for it)
+Ctrl-Z	Undo (shift to Redo)
+
+Window manipulation (Use F1 to switch between open files):
+
+Shft-escape	Remove pop-up window (same as F4; Shft-F4 switches to pop-up)
+Shft-Ctrl-N	Open new window
+Shft-Ctrl-W	Close window
+Ctrl-`		Switch window
+
+There are also some convenient function keys:
+
+F1    	  	Switch between open files 
+Shft-F1		List open files
+Ctrl-F1		Open file (different interface to Ctrl-O)
+Shft-Ctrl-F1 	Open folder
+Alt-F1 		Show list of recently opened files
+Shft-Alt-F1	Open file or URL under the cursor
+
+F2 		Fix previous highlighted mispelling
+Shft-F2		Complete word from dictionary
+Ctrl-F2		Insert a Unicode character by name
+Alt-F2		Look up current word in on-line dictionary
+Shft-Alt-F2	Look up current word in on-line thesaurus
+
+F3 		Complete the current word based on context; also try Alt-/
+Shft-F3		Copy a character from the line above 
+Ctrl-F3		Copy the line above
+Alt-F3		Comment line or region
+Shft-Alt-F3	Uncomment line or region
+
+F4 		Remove pop-up window (same as Shift-escape)
+Shft-F4		Switch to pop-up window
+Alt-F4		Quit emacs
+Ctrl-F4 	Finish keyboard macro and call it
+Shft-Ctrl-F4  	Start keyboard macro
+
+F5		Go to next bookmark (visible in left margin) 
+Shft-F5		Go to previous bookmark
+Ctrl-F5		Toggle bookmark on/off at cursor
+Alt-F5		Go to next error
+Shft-Alt-F5	Go to previous error
+
+F6		Open up command line (eshell) or jump back from eshell
+Ctrl-F6		Interface to Git (magit)
+Shft-Ctrl-F6	Show coloured word diff against last Git commit
+Alt-F6 		Go to next change (with respect to Git repository)
+Shft-Alt-F6  	Go to previous change (with respect to Git repository)
+
+F7		Toggle folding of text at the cursor
+Alt-F7		Hide all folds
+Shft-Alt-F7	Open all folds
+Ctrl-F7		Go to next section
+Shft-Ctrl-F7	Go to previous section
+
+There are thousands of Emacs commands that have complex and difficult to remember keystrokes.  An easier way to invoke these is to type Alt-X and then the name of the command.  For example:
+
+Alt-X re-builder    Start creating a regular expression (pcre syntax)	 
+Alt-X occur	    Show all lines matching a pattern
+
+Function keys F8 to F12 are reserved for commands that pertain to particular types of files.
+
+XML:
+
+F5		Next validation error
+Shft-F5 	Previous validation error
+F9		Look up element in TEI documentation
+F10		View file in a web browser
+Shft-F10	Show Xpath of current element
+F11		Insert tag or put it around selected text
+Ctrl-F11	Split current element
+F12 		Complete in context according to schema
+Shft-F12	Insert closing tag for current element	      
+Alt-F12		Markup current word
+Ctrl-F12	Finish an opening tag and add closing tag
+Shft-Ctrl-f12	As above, but in-line rather than block
+
+LaTeX:
+
+F5		Next compilation error
+Shft-F5 	Previous compilation error
+F12		Save and compile
+Shft-F12	Run next command
+F11		View PDF output
+Shft-F11	Jump to current location in PDF file
+F10		Complete the current LaTeX expression
+Alt-F10		Insert environment or surround selected text
+Shft-Alt-F10	Change current environment
+F9		Show help on LaTeX command at cursor
+Shft-F9		Search a multi-file document
+
+Ctrl-E		Insert \emph{} around text
+Ctrl-B		Insert \textbf{} around text
+Alt-p		Insert \textsc{} around text
+Alt-f		Insert \footnote{} around text
