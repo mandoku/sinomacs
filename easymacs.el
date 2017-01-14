@@ -421,6 +421,7 @@ displayed in the mode-line.")
 (when (memq window-system '(mac ns))
   (setq ns-pop-up-frames nil
 	mac-command-modifier 'control
+        mac-option-modifier 'meta
 	x-select-enable-clipboard t))
 (use-package exec-path-from-shell
   :ensure t
@@ -718,7 +719,7 @@ displayed in the mode-line.")
 	      ("<f12>" . markdown-live-preview-mode)))
 
 ;;; Global key-bindings
-(bind-key* [escape] 'keyboard-escape-quit)
+;(bind-key* [escape] 'keyboard-escape-quit)
 (bind-key* (kbd "<S-escape>") 'delete-other-windows)
 (bind-key* (kbd "C-`") 'other-frame)
 (bind-key* (kbd "C-a") 'mark-whole-buffer)
