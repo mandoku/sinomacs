@@ -144,7 +144,6 @@
       cua-read-only-cursor-color '(box . "red"))
 ;; Keep selection active after copy
 (setq cua-keep-region-after-copy t)
-(setq org-support-shift-select 'always)
 
 ;; redo+ -- simple, linear undo/redo
 (use-package redo+
@@ -351,6 +350,28 @@ the mode doesn't support imenu."
 
 (global-set-key [next] 'sfp-page-down)
 (global-set-key [prior] 'sfp-page-up)
+;;; Org
+(use-package org
+  :init
+  (setq org-support-shift-select 'always
+	org-return-follows-link t
+	org-agenda-use-time-grid t
+	org-log-done t
+	org-agenda-include-diary t
+	org-directory "~/org/"
+	org-default-notes-file "~/org/org-notes.org"
+	org-completion-use-ido t
+	;; we need texlive, or at least xelatex for this to work:-)
+	org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  :config (run-at-time "00:59" 1800 'org-save-all-org-buffers)
+  :bind
+  (("C-c l" . org-store-link)
+   ("C-c a" . org-agenda)
+   ("C-c r" . org-capture)
+   ("C-c L" . org-insert-link-global)
+   ("C-c o" . org-open-at-point-global)))
 
 ;;; Mandoku
 (use-package gh
@@ -359,11 +380,10 @@ the mode doesn't support imenu."
   :init (setq github-clone-url-slot :clone-url)
   :ensure t)
 (use-package mandoku
-  :init (setq mandoku-base-dir "~/krp/")
-  (setq org-return-follows-link t)
+  :init ;(setq mandoku-base-dir "~/krp/")
   (setq mandoku-do-remote t)
   (setq mandoku-string-limit 10)
-  (setq mandoku-ngram-n 4)
+  ;(setq mandoku-ngram-n 4)
   (setq mandoku-index-display-limit 2000)
   (setq mandoku-repositories-alist
 	'(("KR" "http://www.kanripo.org/api/v1.0") ))
@@ -389,7 +409,6 @@ the mode doesn't support imenu."
 	      ("<f10>" . markdown-other-window)
 	      ("<f11>" . markdown-preview)
 	      ("<f12>" . markdown-live-preview-mode)))
-
 ;;; Global key-bindings
 ;(bind-key* [escape] 'keyboard-escape-quit)
 (bind-key* (kbd "<S-escape>") 'delete-other-windows)
@@ -416,8 +435,8 @@ the mode doesn't support imenu."
 ;;; Function keys
 
 ;; F1
-(bind-key* (kbd "<f1>") 'ido-switch-buffer)
-(bind-key* (kbd "<S-f1>") 'ibuffer)
+(bind-key* (kbd "<S-f1>") 'ido-switch-buffer)
+(bind-key* (kbd "<f1>") 'other-window)
 (bind-key* (kbd "<C-f1>") 'find-file)
 (bind-key* (kbd "<S-C-f1>") '(lambda () (interactive) (find-file "")))
 (bind-key* (kbd "<M-f1>") 'recentf-open-files)
@@ -462,18 +481,18 @@ the mode doesn't support imenu."
 ;; F6
 ;; C-F6 is magit-status, defined above
 ;; (S-)M-F6 is git-gutter:next-hunk and previous-hunk
-(bind-key* (kbd "<f6>")
-	   '(lambda () (interactive)
-	      (if (string= (buffer-name) "*eshell*")
-		  (switch-to-buffer (other-buffer (current-buffer)))
-		(easymacs-eshell))))
+;; (bind-key* (kbd "<f6>")
+;; 	   '(lambda () (interactive)
+;; 	      (if (string= (buffer-name) "*eshell*")
+;; 		  (switch-to-buffer (other-buffer (current-buffer)))
+;; 		(easymacs-eshell))))
 
 ;; F7
-(bind-key* (kbd "<f7>") 'fold-dwim-toggle)
-(bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
-(bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
-(bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
-(bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
+;; (bind-key* (kbd "<f7>") 'fold-dwim-toggle)
+;; (bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
+;; (bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
+;; (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
+;; (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
 ;;; Show help screen at startup
 
@@ -490,3 +509,6 @@ the mode doesn't support imenu."
 (add-hook 'kill-buffer-query-functions 'kill-unkillable-buffer)
 (read-only-mode)
 (view-mode)
+
+;;; Load the remains of the Easymacs package
+(require 'easymacs)
