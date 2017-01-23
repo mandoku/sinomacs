@@ -315,7 +315,8 @@ the mode doesn't support imenu."
          (global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
          :bind (("<f5>" . bm-next)
                 ("S-<f5>" . bm-previous)
-                ("C-S-<f5>" . bm-toggle)))
+                ("M-<f5>" . bm-show-all)
+                ("C-<f5>" . bm-toggle)))
 
 
 ;; Folding for fold-dwim
@@ -534,8 +535,8 @@ the mode doesn't support imenu."
 ;; F5
 ;; F5 bookmark binding see above
 ;; We want M-F5 and M-S-F5 to be overridden
-(bind-key (kbd "<M-f5>") 'next-error)
-(bind-key (kbd "<M-S-f5>") 'previous-error)
+;(bind-key (kbd "<M-f5>") 'next-error)
+;(bind-key (kbd "<M-S-f5>") 'previous-error)
 
 ;; F6
 ;; C-F6 is magit-status, defined above
