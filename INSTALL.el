@@ -1,10 +1,10 @@
-;;; INSTALLING EASYMACS
+;;; INSTALLING SINOMACS
 
-;; In order to install Easymacs, all you need to do are these three
+;; In order to install Sinomacs, all you need to do are these three
 ;; steps (if you are looking at this file within Emacs, then you have
 ;; already done the first two):
 ;; 
-;; 1) Make sure that the easymacs.zip file is extracted somewhere on
+;; 1) Make sure that the sinomacs.zip file is extracted somewhere on
 ;;    your hard drive.
 ;;
 ;; 2) Start Emacs, and open up this file.  From the "File" menu,
