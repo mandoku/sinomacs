@@ -28,6 +28,11 @@ Ctrl-`		Switch window
 F4      	Remove pop-up window
 Shft-F4		Switch to other buffer(s) in split screen
 
+Input methods 	Emacs offers a large number of input methods for many languages:
+
+Ctrl-\      	Switch to the most recently used input method 
+Ctrl-u Ctrl-\ 	Select a new input method (use tab to see a menu of possible selections)
+
 There are also some convenient function keys:
 
 F1    	  	Display this command overview
