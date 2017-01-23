@@ -49,7 +49,6 @@
 			  buffer-file-name)))
 (add-to-list 'load-path sinomacs-dir)
 
-
 ;;; Set-up for packages
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -504,13 +503,10 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<f2>") 'occur)
 (bind-key* (kbd "<S-f2>") 'sinomacs-grep) 
 (bind-key* (kbd "<C-f2>") 'sinomacs-ctext-dict-region)
-
-
 (bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://www.chise.org/ids-find?components="
 			   (read-string "Search in CHISE IDS find for: "(char-to-string (char-after)))))))
-
 (bind-key* (kbd "<S-M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://moby-thesaurus.org/search?q="
@@ -520,6 +516,7 @@ the mode doesn't support imenu."
 ;; F3 is company-complete (defined above)
 (bind-key* (kbd "<f3>") 'sinomacs-bibl-helm)
 (bind-key* (kbd "<S-f3>") 'helm-bibtex)
+(bind-key* (kbd "<M-f3>") 'mandoku-show-catalog)
 (bind-key* (kbd "<C-f3>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://kanji.zinbun.kyoto-u.ac.jp/kanseki?query="
@@ -583,6 +580,9 @@ the mode doesn't support imenu."
 
 ;;; Load the remains of the Easymacs package
 (require 'easymacs)
+
+;;; Sample for demonstration.  Remove this if not needed anymore
+(load (concat sinomacs-dir "sample/sinomacs-sample"))
 
 (provide 'sinomacs)
 ;; sinomacs.el ends here

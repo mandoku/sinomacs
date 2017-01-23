@@ -43,6 +43,7 @@ Ctrl-F2		Search in ctext.org dictionary
 Shft-Alt-F2   	Search for component in CHISE IDS Find
 
 F3      	Search for Chinese titles 
+Alt-F3      	Show Mandoku Catalog
 Shft-F3		Search your Bibliography
 Ctrl-F3		Search Kanseki Database
 Shft-Ctrl-F3  	Search DDB Authority database for Persons
