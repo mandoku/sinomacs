@@ -25,8 +25,8 @@ Window manipulation (Use F1 to switch between open files):
 Shft-Ctrl-N	Open new window (and display command overview)
 Shft-Ctrl-W	Close window
 Ctrl-`		Switch window
-F4		Remove pop-up window
-Shft-F4		Switches to other buffer(s) in split screen
+F4      	Remove pop-up window
+Shft-F4		Switch to other buffer(s) in split screen
 
 There are also some convenient function keys:
 
@@ -35,20 +35,20 @@ Shft-F1		Switch among open files
 Ctrl-F1		List of open files and buffers
 Shft-Ctrl-F1 	Open folder
 Alt-F1 		Show list of recently opened files
-Shft-Alt-F1	Open file or URL under the cursor
+Shft-Alt-F1    	Open file or URL under the cursor
 
-F2		Go to next bookmark (visible in left margin) / list bookmarks
-Shft-F2		Toggle bookmark on/off at cursor
-Ctrl-F2		Git status
-Shft-Alt-F2	Search for component in CHISE IDS Find
+F2      	List all occurrences of search term in current file
+Shft-F2		List all occurrences of search term in current directory
+Ctrl-F2		Search in ctext.org dictionary
+Shft-Alt-F2   	Search for component in CHISE IDS Find
 
-F3 		Search for Chinese titles
-Shft-F3		Search your bibliography
+F3      	Search for Chinese titles 
+Shft-F3		Search your Bibliography
 Ctrl-F3		Search Kanseki Database
-Alt-F3		Comment line or region
-Shft-Alt-F3	Uncomment line or region
+Shft-Ctrl-F3  	Search DDB Authority database for Persons
+Shft-Alt-F3  	Search DDB Authority database for Places
 
-F4 		Remove pop-up window (same as Shift-escape)
+F4 		Remove pop-up window
 Shft-F4		Switch to pop-up window
 Alt-F4		Quit emacs
 Ctrl-F4 	Split window horizontally
@@ -57,8 +57,8 @@ Shft-Ctrl-F4  	Split window vertically
 F5		Go to next bookmark
 Shft-F5		Go to previous bookmark
 Ctrl-F5		Toggle bookmark on/off at cursor
-Alt-F5		Go to next error
-Shft-Alt-F5	Go to previous error
+Alt-F5		List bookmarks
+Shft-Alt-F5	
 
 F6		Search in Kanseki Repository
 Shft-F6		Search in User files (under ~/krp/work)
@@ -68,10 +68,10 @@ Alt-F6 		Go to next change (with respect to Git repository)
 Shft-Alt-F6  	Go to previous change (with respect to Git repository)
 
 F7		Open sample Org document
-Alt-F7		
-Shft-Alt-F7	
+Shft-F7		
 Ctrl-F7		
 Shft-Ctrl-F7	
+Shft-Alt-F7	
 
 There are thousands of Emacs commands that have complex and difficult to remember keystrokes.  An easier way to invoke these is to type Alt-X and then the name of the command.  For example:
 

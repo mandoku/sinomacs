@@ -83,8 +83,6 @@
 	org-agenda-use-time-grid t
 	org-log-done t
 	org-agenda-include-diary t
-	org-directory "~/org/"
-	org-default-notes-file "~/org/org-notes.org"
 	org-completion-use-ido t
 	;; we need texlive, or at least xelatex for this to work:-)
 	org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
@@ -259,7 +257,7 @@ the mode doesn't support imenu."
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
-  :bind* ("<C-f2>" . magit-status)
+  :bind* ("<C-f6>" . magit-status)
   :config (setq magit-diff-refine-hunk 'all))
 ;; To finish magit sub-editor
 (eval-after-load "with-editor"
@@ -316,9 +314,9 @@ the mode doesn't support imenu."
          (global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
          (global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
          (global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
-         :bind (("<f2>" . bm-next)
-                ("S-<f2>" . bm-previous)
-                ("C-S-<f2>" . bm-toggle)))
+         :bind (("<f5>" . bm-next)
+                ("S-<f5>" . bm-previous)
+                ("C-S-<f5>" . bm-toggle)))
 
 
 ;; Folding for fold-dwim
@@ -502,10 +500,11 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<M-f1>") 'recentf-open-files)
 (bind-key* (kbd "<S-M-f1>") 'ffap)
 
-;; F2 bookmark binding see above
-;(bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
-;(bind-key* (kbd "<S-f2>") 'ispell-complete-word)
-					;(bind-key* (kbd "<C-f2>") 'insert-char)
+;; F2
+(bind-key* (kbd "<f2>") 'occur)
+(bind-key* (kbd "<S-f2>") 'sinomacs-grep) 
+(bind-key* (kbd "<C-f2>") 'sinomacs-ctext-dict-region)
+
 
 (bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
@@ -520,17 +519,14 @@ the mode doesn't support imenu."
 
 ;; F3 is company-complete (defined above)
 (bind-key* (kbd "<f3>") 'sinomacs-bibl-helm)
-
 (bind-key* (kbd "<S-f3>") 'helm-bibtex)
-
 (bind-key* (kbd "<C-f3>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://kanji.zinbun.kyoto-u.ac.jp/kanseki?query="
 			   (read-string "Search in Kanseki Database for: ")))))
-(bind-key* (kbd "<M-f3>") '(lambda () (interactive)
-			     (easymacs-comment-line-or-region 1)))
-(bind-key* (kbd "<M-S-f3>") '(lambda () (interactive)
-			     (easymacs-comment-line-or-region -1)))
+(bind-key* (kbd "<C-S-f3>") 'sinomacs-ddbc-authority-search-person)
+(bind-key* (kbd "<M-S-f3>") 'sinomacs-ddbc-authority-search-place)
+
 ;; F4
 (bind-key* (kbd "<f4>") 'delete-other-windows)
 (bind-key* (kbd "<S-f4>") 'other-window)
@@ -539,8 +535,8 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
+;; F5 bookmark binding see above
 ;; We want M-F5 and M-S-F5 to be overridden
-
 (bind-key (kbd "<M-f5>") 'next-error)
 (bind-key (kbd "<M-S-f5>") 'previous-error)
 
@@ -554,10 +550,6 @@ the mode doesn't support imenu."
 ;; 		(easymacs-eshell))))
 
 ;; F7
-(bind-key* (kbd "<f7>") '(lambda () (interactive)
-			   (find-file-other-frame
-			    (concat sinomacs-dir "/sample/sinomacs.org"))))
-
 ;; (bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
 ;; (bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
 ;; (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
