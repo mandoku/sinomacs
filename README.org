@@ -40,7 +40,7 @@ For a list of keybindings, see the file easymacs-help.txt, which is the page sho
      * Linux: Install via your package manager.
 
   - Get the Sinomacs zip file: Use the green download button above or
-    use [[https://github.com/mandoku/sinomacs/archive/sinomacs.zip][Sinomacs Archive]].  Unzip it in a convenient location.
+    use [[https://github.com/mandoku/sinomacs/archive/master.zip][Sinomacs Archive]].  Unzip it in a convenient location.
   
   - Run Emacs and click on the menu option File->Open File.  Navigate
     to the folder in which you just unzipped Sinomacs and open the
