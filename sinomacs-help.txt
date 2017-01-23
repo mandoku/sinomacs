@@ -67,7 +67,7 @@ Shft-Ctrl-F6	Show coloured word diff against last Git commit
 Alt-F6 		Go to next change (with respect to Git repository)
 Shft-Alt-F6  	Go to previous change (with respect to Git repository)
 
-F7		
+F7		Open sample Org document
 Alt-F7		
 Shft-Alt-F7	
 Ctrl-F7		
@@ -83,7 +83,15 @@ Function keys F8 to F12 are reserved for commands that pertain to particular typ
 Mandoku:
 
 
-Org:
+Org: (These commands are only active when an org-mode document is active)
+
+Ctlr-c Ctlr-e	Export document 
+
+
+Global Org commands:
+
+Ctlr-c l,	Store link
+F12		Show agenda
 
 
 For more information about Sinomacs please go to http://github.com/mandoku/sinomacs

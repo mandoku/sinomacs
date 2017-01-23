@@ -97,8 +97,10 @@
    ("C-c r" . org-capture)
    ("C-c L" . org-insert-link-global)
    ("C-c o" . org-open-at-point-global))
-  :bind* ("<f12>" . org-agenda)
   )
+(use-package org-ref
+  :ensure t)
+
 
 ;; Easymacs packages to load
 (require 'fold-dwim)
@@ -454,8 +456,8 @@ the mode doesn't support imenu."
 		       (t (concat (s-join ", " authors) ", ..."))))))
   )
 
-(advice-add 'bibtex-completion-shorten-authors :around #'sinomacs-shorten-authors--cjk)
-(advice-add 'bibtex-completion-apa-format-authors :around #'sinomacs-format--cjk-authors)
+;(advice-add 'bibtex-completion-shorten-authors :around #'sinomacs-shorten-authors--cjk)
+;(advice-add 'bibtex-completion-apa-format-authors :around #'sinomacs-format--cjk-authors)
 
 ;;; Markdown
 (use-package markdown-mode
@@ -552,12 +554,18 @@ the mode doesn't support imenu."
 ;; 		(easymacs-eshell))))
 
 ;; F7
-;; (bind-key* (kbd "<f7>") 'fold-dwim-toggle)
+(bind-key* (kbd "<f7>") '(lambda () (interactive)
+			   (find-file-other-frame
+			    (concat sinomacs-dir "/sample/sinomacs.org"))))
+
 ;; (bind-key* (kbd "<M-f7>") 'fold-dwim-hide-all)
 ;; (bind-key* (kbd "<S-M-f7>") 'fold-dwim-show-all)
 ;; (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 ;; (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
+;; F12
+
+(bind-key* (kbd "<f12>")  'org-agenda)
 
 ;;; Load the lisp files in sinomacs-dir
 

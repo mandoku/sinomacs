@@ -1,0 +1,30 @@
+#+TITLE: Sinomacs
+#+AUTHOR: Christian Wittern
+
+* About Sinomacs
+
+  =Sinomacs= is an attempt to make it easier for Sinologists to use
+  the =Kanseki Repository= and =Mandoku=. While =Mandoku= is an Emacs
+  package that provides access to the =Kanseki Repository=, =Sinomacs=
+  is a customization for Emacs. The difference is the following: While
+  =Mandoku= is carefully designed to blend in to an existing Emacs
+  configuration and behaves like any other Emacs package in that
+  respect, =Sinomacs= tries to change many aspects of Emacs to make it
+  easier for users without previous experience of Emacs and without a
+  technical background to use =Mandoku= productively.  
+
+
+* Orgmode
+
+  One of the major components of Emacs (and Mandoku and Sinomacs) is
+  =Orgmode=  cite:Dominik201408 . This is an extension to Emacs that allows note-taking,
+  planning, writing of academic articles and documenting of
+  reproducible research.
+
+
+
+* References
+
+
+
+bibliography:sinomacs.bib
