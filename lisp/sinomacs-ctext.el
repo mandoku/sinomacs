@@ -1,4 +1,5 @@
-;;
+;;; sinomacs-ctext.el --- Some functions to interact with ctext.org
+
 
 (defun sinomacs-ctext-dict-region (&optional beg end)
   (interactive "r")
@@ -8,11 +9,19 @@
     (copy-to-register "0" beg end)
     ))
 
-(global-set-key (kbd "C-c c") 'sinomacs-ctext-dict-region)
-
 (defun sinomacs-ctext-dict  (search)
   (eww-browse-url (concat "http://ctext.org/dictionary.pl?if=en&char=" search))
   (switch-to-buffer "*eww*"))
+
+
+(defun sinomacs-ctext-pre-qin-search  (search)
+  (eww-browse-url (concat "http://ctext.org/pre-qin-and-han?searchu=" search))
+  (switch-to-buffer "*eww*"))
+
+(defun sinomacs-ctext-post-han-search  (search)
+  (eww-browse-url (concat "http://ctext.org/post-han?searchu=" search))
+  (switch-to-buffer "*eww*"))
+
 
 
 (eval-after-load "eww"

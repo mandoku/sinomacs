@@ -71,6 +71,35 @@
 ;; Needed by use-package
 (use-package diminish :ensure t)
 (use-package bind-key :ensure t)
+;;; Org
+;; org needs to come early to avoid preloading of the built-in version
+;; ensure at least version 9.0
+(load "sinomacs-helper")
+(sinomacs-package-update 'org '(9 0 0))
+(use-package org
+  :init
+  (setq org-support-shift-select 'always
+	org-return-follows-link t
+	org-agenda-use-time-grid t
+	org-log-done t
+	org-agenda-include-diary t
+	org-directory "~/org/"
+	org-default-notes-file "~/org/org-notes.org"
+	org-completion-use-ido t
+	;; we need texlive, or at least xelatex for this to work:-)
+	org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  :config (run-at-time "00:59" 1800 'org-save-all-org-buffers)
+  :bind
+  (("C-c l" . org-store-link)
+   ("C-c a" . org-agenda)
+   ("C-c r" . org-capture)
+   ("C-c L" . org-insert-link-global)
+   ("C-c o" . org-open-at-point-global))
+  :bind* ("<f12>" . org-agenda)
+  )
+
 ;; Easymacs packages to load
 (require 'fold-dwim)
 (require 'tei-html-docs-p5)
@@ -138,7 +167,7 @@
 
 ;; CUA-mode
 (cua-mode t)
-(setq cua-enable-cursor-indications t)
+(setq cua-enable-cursor-indications nil)
 (setq cua-normal-cursor-color '(bar . "black")
       cua-overwrite-cursor-color '(box . "blue")
       cua-read-only-cursor-color '(box . "red"))
@@ -159,7 +188,7 @@
 (setq recentf-exclude '("[.]recentf" "[.]bm-repository$"
 			   "[.]bmk$" "[.]abbrev_defs"
 			   "[.]elc$" "ido.last" "autoloads.el"
-			   "easymacs-help.txt"))
+			   "sinomacs-help.txt"))
 ;; Save list when used, in case of crashes
 (defadvice recentf-open-files (after sinomacs-recentf-advice activate)
   (recentf-save-list))
@@ -174,15 +203,15 @@
 
 ;; Completion
 (setq dabbrev-check-all-buffers t)
-(use-package company
-  :ensure t
-  :diminish company-mode
-  :config (progn
-	    (global-company-mode)
-	    (setq company-idle-delay nil))
-  :bind* (("<f3>" . company-complete)
-	  :map company-active-map
-	  ("<escape>" . company-abort)))
+;; (use-package company
+;;   :ensure t
+;;   :diminish company-mode
+;;   :config (progn
+;; 	    (global-company-mode)
+;; 	    (setq company-idle-delay nil))
+;;   :bind* (("<f3>" . company-complete)
+;; 	  :map company-active-map
+;; 	  ("<escape>" . company-abort)))
 
 ;; Ido and ibuffer for buffer switching
 (ido-mode 'buffer)
@@ -228,7 +257,7 @@ the mode doesn't support imenu."
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status)
-;  :bind* ("<C-f6>" . magit-status)
+  :bind* ("<C-f2>" . magit-status)
   :config (setq magit-diff-refine-hunk 'all))
 ;; To finish magit sub-editor
 (eval-after-load "with-editor"
@@ -285,9 +314,9 @@ the mode doesn't support imenu."
          (global-set-key (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
          (global-set-key (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
          (global-set-key (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
-         :bind (("<f5>" . bm-next)
-                ("S-<f5>" . bm-previous)
-                ("C-<f5>" . bm-toggle)))
+         :bind (("<f2>" . bm-next)
+                ("S-<f2>" . bm-previous)
+                ("C-S-<f2>" . bm-toggle)))
 
 
 ;; Folding for fold-dwim
@@ -350,29 +379,6 @@ the mode doesn't support imenu."
 
 (global-set-key [next] 'sfp-page-down)
 (global-set-key [prior] 'sfp-page-up)
-;;; Org
-(use-package org
-  :init
-  (setq org-support-shift-select 'always
-	org-return-follows-link t
-	org-agenda-use-time-grid t
-	org-log-done t
-	org-agenda-include-diary t
-	org-directory "~/org/"
-	org-default-notes-file "~/org/org-notes.org"
-	org-completion-use-ido t
-	;; we need texlive, or at least xelatex for this to work:-)
-	org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	"xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-  :config (run-at-time "00:59" 1800 'org-save-all-org-buffers)
-  :bind
-  (("C-c l" . org-store-link)
-   ("C-c a" . org-agenda)
-   ("C-c r" . org-capture)
-   ("C-c L" . org-insert-link-global)
-   ("C-c o" . org-open-at-point-global)))
-
 ;;; Mandoku
 (use-package gh
   :ensure t)
@@ -399,7 +405,57 @@ the mode doesn't support imenu."
 	 ("S-<f7>" . mandoku-show-catalog))
   )
 
+;;; helm, bib
+(use-package helm)
+(use-package helm-wordnet)
+(use-package helm-bibtex
+  :config
+  (setq
+   bibtex-completion-pdf-field "File")
+  )
 
+(defun sinomacs-shorten-authors--cjk (orig-fun &rest args) ; (authors)
+  "Returns a comma-separated list of the surnames in authors."
+  ;{family=Huang, given=Jingui, cjk=黃金貴}
+  (if authors
+      (cl-loop for a in (s-split " and " authors)
+               for p = (s-split "," a t)
+               for sep = "" then ", "
+               concat sep
+               if (eq 1 (length p))
+               concat (-last-item (s-split " +" (car p) t))
+               else
+               concat (car p))
+    nil))
+
+(defun sinomacs-format--cjk-authors (orig-fun &rest args)
+  "Format authors my way."
+  ;(if (string-match "=" value )
+  (cl-loop for
+	   a in
+	   (s-split " and " (value t)
+		    collect
+		    (let ((fields
+			   (mapcar (lambda (x)
+				     (let* ((f (split-string x "="))
+					    (prop (s-trim (nth 0 f)))
+					    (val (s-trim (nth 1 f))))
+				       (cons prop val)))
+				   (s-split "," a t))))
+		      (s-format "${given} ${family} (${cjk})" 'aget fields)) 
+		    into authors
+		    finally return
+		    (let ((l (length authors)))
+		      (cond
+		       ((= l 1) (car authors))
+		       ((= l 2) (s-join " & " authors))
+		       ((< l 8) (concat (s-join ", " (-butlast authors))
+					", & " (-last-item authors)))
+		       (t (concat (s-join ", " authors) ", ..."))))))
+  )
+
+(advice-add 'bibtex-completion-shorten-authors :around #'sinomacs-shorten-authors--cjk)
+(advice-add 'bibtex-completion-apa-format-authors :around #'sinomacs-format--cjk-authors)
 
 ;;; Markdown
 (use-package markdown-mode
@@ -411,7 +467,7 @@ the mode doesn't support imenu."
 	      ("<f12>" . markdown-live-preview-mode)))
 ;;; Global key-bindings
 ;(bind-key* [escape] 'keyboard-escape-quit)
-(bind-key* (kbd "<S-escape>") 'delete-other-windows)
+;(bind-key* (kbd "<S-escape>") 'delete-other-windows)
 (bind-key* (kbd "C-`") 'other-frame)
 (bind-key* (kbd "C-a") 'mark-whole-buffer)
 (bind-key* (kbd "C-s") 'save-buffer)
@@ -420,7 +476,7 @@ the mode doesn't support imenu."
 				   (call-interactively 'find-file))))
 (bind-key* (kbd "C-S-n") '(lambda () (interactive)
 			    (find-file-other-frame
-			     (concat easymacs-dir "easymacs-help.txt"))))
+			     (concat sinomacs-dir "sinomacs-help.txt"))))
 (bind-key* (kbd "C-o") '(lambda () (interactive)
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file-existing))))
@@ -435,22 +491,25 @@ the mode doesn't support imenu."
 ;;; Function keys
 
 ;; F1
+(bind-key* (kbd "<f1>") '(lambda () (interactive)
+			    (find-file
+			     (concat sinomacs-dir "sinomacs-help.txt"))))
 (bind-key* (kbd "<S-f1>") 'ido-switch-buffer)
-(bind-key* (kbd "<f1>") 'other-window)
-(bind-key* (kbd "<C-f1>") 'find-file)
+(bind-key* (kbd "<C-f1>") 'ibuffer)
 (bind-key* (kbd "<S-C-f1>") '(lambda () (interactive) (find-file "")))
 (bind-key* (kbd "<M-f1>") 'recentf-open-files)
 (bind-key* (kbd "<S-M-f1>") 'ffap)
 
-;; F2
-(bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
-(bind-key* (kbd "<S-f2>") 'ispell-complete-word)
-(bind-key* (kbd "<C-f2>") 'insert-char)
+;; F2 bookmark binding see above
+;(bind-key* (kbd "<f2>") 'flyspell-auto-correct-previous-word)
+;(bind-key* (kbd "<S-f2>") 'ispell-complete-word)
+					;(bind-key* (kbd "<C-f2>") 'insert-char)
+
 (bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
-	      (eww (concat "http://www.wordnik.com/words/"
-				  (substring-no-properties
-				    (thing-at-point 'word))))))
+	      (eww (concat "http://www.chise.org/ids-find?components="
+			   (read-string "Search in CHISE IDS find for: "(char-to-string (char-after)))))))
+
 (bind-key* (kbd "<S-M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://moby-thesaurus.org/search?q="
@@ -458,10 +517,14 @@ the mode doesn't support imenu."
 				    (thing-at-point 'word))))))
 
 ;; F3 is company-complete (defined above)
-(bind-key* (kbd "<S-f3>") '(lambda () (interactive)
-			     (copy-from-above-command 1)))
-(bind-key* (kbd "<C-f3>") '(lambda () (interactive)
-			     (copy-from-above-command)))
+(bind-key* (kbd "<f3>") 'sinomacs-bibl-helm)
+
+(bind-key* (kbd "<S-f3>") 'helm-bibtex)
+
+(bind-key* (kbd "<C-f3>")
+	   '(lambda () (interactive)
+	      (eww (concat "http://kanji.zinbun.kyoto-u.ac.jp/kanseki?query="
+			   (read-string "Search in Kanseki Database for: ")))))
 (bind-key* (kbd "<M-f3>") '(lambda () (interactive)
 			     (easymacs-comment-line-or-region 1)))
 (bind-key* (kbd "<M-S-f3>") '(lambda () (interactive)
@@ -469,12 +532,13 @@ the mode doesn't support imenu."
 ;; F4
 (bind-key* (kbd "<f4>") 'delete-other-windows)
 (bind-key* (kbd "<S-f4>") 'other-window)
-(bind-key* (kbd "<C-f4>") 'kmacro-end-or-call-macro)
-(bind-key* (kbd "<C-S-f4>") 'kmacro-start-macro-or-insert-counter) 
+(bind-key* (kbd "<C-f4>") 'split-window-below)
+(bind-key* (kbd "<C-S-f4>") 'split-window-right)
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
 
 ;; F5
-;; We want M-F5 and M-S-F5 to be overridden 
+;; We want M-F5 and M-S-F5 to be overridden
+
 (bind-key (kbd "<M-f5>") 'next-error)
 (bind-key (kbd "<M-S-f5>") 'previous-error)
 
@@ -494,6 +558,13 @@ the mode doesn't support imenu."
 ;; (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 ;; (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
+
+;;; Load the lisp files in sinomacs-dir
+
+(ignore-errors 
+    (mapc 'load (directory-files (concat sinomacs-dir "lisp") 't "^[^#].*el$")))
+
+
 ;;; Show help screen at startup
 
 ;; Workaround for a frame-related mac bug
@@ -512,3 +583,6 @@ the mode doesn't support imenu."
 
 ;;; Load the remains of the Easymacs package
 (require 'easymacs)
+
+(provide 'sinomacs)
+;; sinomacs.el ends here

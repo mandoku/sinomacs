@@ -1,0 +1,4 @@
+
+(defun sinomacs-get-char ())
+
+    
