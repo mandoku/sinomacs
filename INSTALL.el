@@ -56,7 +56,7 @@
       (insert ";")
       (forward-line))
     (goto-char (point-min))
-    (insert (concat ";; Load Sinomacs\n" load-line "\n\n"))
+    (insert (concat ";; Load Sinomacs\n" load-line "\n;; mandoku-base-dir \n"))
     (save-buffer))
   (kill-buffer nil)
   
