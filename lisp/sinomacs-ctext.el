@@ -25,7 +25,7 @@
 
 
 (eval-after-load "eww"
-  '(progn (define-key eww-mode-map "c" 'sinomacs-eww-ctext-dict-position)
+  '(progn (define-key eww-mode-map "c" 'sinomacs-ctext-dict-eww-position)
 	  (define-key eww-mode-map "i" 'sinomacs-eww-isbn-helper)
 	   (define-key eww-mode-map "f" 'eww-lnum-follow)
           (define-key eww-mode-map "F" 'eww-lnum-universal)))
@@ -57,7 +57,14 @@ file."
   (search-forward "---")
   (beginning-of-line)
   )
-		 
+
+;; other dictionaries
+(defun sinomacs-chise-find ()
+  (interactive)
+  (eww (concat "http://www.chise.org/ids-find?components="
+               (read-string "Search in CHISE IDS find for: "(char-to-string (char-after))))))
+
+
 
 (provide 'sinomacs-ctext)
 ;; sinomacs-ctext.el ends here

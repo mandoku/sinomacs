@@ -404,6 +404,17 @@ the mode doesn't support imenu."
 	 ("S-<f6>" . mandoku-search-user-text)
 	 ("S-<f7>" . mandoku-show-catalog))
   )
+;;; isearch yank (courtesy of Sacha Chua )
+(defun sinomacs-isearch-yank-current-word ()
+  "Pull current word from buffer into search string."
+  (interactive)
+  (save-excursion
+    (skip-syntax-backward "w_")
+    (isearch-yank-internal
+     (lambda ()
+       (skip-syntax-forward "w_")
+       (point)))))
+(define-key isearch-mode-map (kbd "C-x") 'sinomacs-isearch-yank-current-word)
 
 ;;; helm, bib
 (use-package helm)
@@ -501,9 +512,22 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<S-M-f1>") 'ffap)
 
 ;; F2
-(bind-key* (kbd "<f2>") 'occur)
-(bind-key* (kbd "<S-f2>") 'sinomacs-grep) 
-(bind-key* (kbd "<C-f2>") 'sinomacs-ctext-dict-region)
+;; first: remove unwanted keybindings
+(defhydra hydra-search ()
+; we want to avoid using "c" here since that is used in ctext dic buffer
+      "Search"
+      ("o" occur  "List search term in this file\n" :exit t)
+      ("g" sinomacs-grep "List search term in this directory\n" :exit t)
+      ("d" sinomacs-ctext-dict-region "Lookup search term in Ctext.org dictionary\n" :exit t)
+      ("f" sinomacs-chise-find "Lookup character in CHISE IDS\n" :exit t)
+      )
+(defhydra hydra-zoom ()
+      "zoom"
+      ("+" text-scale-increase "in")
+      ("-" text-scale-decrease "out"))
+(bind-key* (kbd "<f2>") 'hydra-search/body)
+(bind-key* (kbd "<S-f2>") 'hydra-zoom/body) 
+;(bind-key* (kbd "<C-f2>") 'sinomacs-ctext-dict-region)
 (bind-key* (kbd "<M-f2>")
 	   '(lambda () (interactive)
 	      (eww (concat "http://www.chise.org/ids-find?components="
@@ -526,8 +550,8 @@ the mode doesn't support imenu."
 (bind-key* (kbd "<M-S-f3>") 'sinomacs-ddbc-authority-search-place)
 
 ;; F4
-(bind-key* (kbd "<f4>") 'delete-other-windows)
-(bind-key* (kbd "<S-f4>") 'other-window)
+(bind-key* (kbd "<f4>") 'other-window)
+(bind-key* (kbd "<S-f4>") 'delete-other-windows)
 (bind-key* (kbd "<C-f4>") 'split-window-below)
 (bind-key* (kbd "<C-S-f4>") 'split-window-right)
 (bind-key* (kbd "<M-f4>") 'save-buffers-kill-emacs)
