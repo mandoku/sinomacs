@@ -1,6 +1,6 @@
 ;; query the ddbc authority files
 
-(defvar sinomacs-ddbc-authority-url "http://authority.ddbc.edu.tw/webwidget/getAuthorityData.php?id=" )
+(defvar sinomacs-ddbc-authority-url "http://authority.dila.edu.tw/webwidget/getAuthorityData.php?id=" )
 (defvar sinomacs-ddbc-end-of-headers "\n\n")
 (defvar sinomacs-ddbc-record "~/org/places.org")
 (defvar sinomacs-ddbc-googlemaps-url "https://maps.google.com/maps?&hl=en&z=6")
