@@ -220,7 +220,7 @@
   "Ignore all non-user (a.k.a. *starred*) buffers except *eshell*."
   (and (string-match "^\*" name)
        (not (string= name "*eshell*"))))
-(setq ido-ignore-buffers '("\\` " easymacs-ido-ignore))
+;(setq ido-ignore-buffers '("\\` " easymacs-ido-ignore))
 
 (require 'ibuffer)
 (require 'ibuf-ext)
@@ -425,48 +425,6 @@ the mode doesn't support imenu."
    bibtex-completion-pdf-field "File")
   )
 
-(defun sinomacs-shorten-authors--cjk (orig-fun &rest args) ; (authors)
-  "Returns a comma-separated list of the surnames in authors."
-  ;{family=Huang, given=Jingui, cjk=黃金貴}
-  (if authors
-      (cl-loop for a in (s-split " and " authors)
-               for p = (s-split "," a t)
-               for sep = "" then ", "
-               concat sep
-               if (eq 1 (length p))
-               concat (-last-item (s-split " +" (car p) t))
-               else
-               concat (car p))
-    nil))
-
-(defun sinomacs-format--cjk-authors (orig-fun &rest args)
-  "Format authors my way."
-  ;(if (string-match "=" value )
-  (cl-loop for
-	   a in
-	   (s-split " and " (value t)
-		    collect
-		    (let ((fields
-			   (mapcar (lambda (x)
-				     (let* ((f (split-string x "="))
-					    (prop (s-trim (nth 0 f)))
-					    (val (s-trim (nth 1 f))))
-				       (cons prop val)))
-				   (s-split "," a t))))
-		      (s-format "${given} ${family} (${cjk})" 'aget fields)) 
-		    into authors
-		    finally return
-		    (let ((l (length authors)))
-		      (cond
-		       ((= l 1) (car authors))
-		       ((= l 2) (s-join " & " authors))
-		       ((< l 8) (concat (s-join ", " (-butlast authors))
-					", & " (-last-item authors)))
-		       (t (concat (s-join ", " authors) ", ..."))))))
-  )
-
-;(advice-add 'bibtex-completion-shorten-authors :around #'sinomacs-shorten-authors--cjk)
-;(advice-add 'bibtex-completion-apa-format-authors :around #'sinomacs-format--cjk-authors)
 
 ;;; Markdown
 (use-package markdown-mode
