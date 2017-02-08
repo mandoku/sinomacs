@@ -13,20 +13,20 @@
 	    (forward-line 1)
 	    (incf lcnt)
 	    (if (looking-at "*")
-		
-	    (while (re-search-forward "^\\([A-z0-9]+\\)	\\([^	]+\\)	\\([^	
+                (while (re-search-forward "^\\([A-z0-9]+\\)	\\([^	]+\\)	\\([^	
 ]+\\)" nil t)
-	  (puthash (match-string 1) (match-string 3) mandoku-titles)
-	  (puthash (match-string 1) (match-string 2) mandoku-textdates)
-	  (if (< (length (match-string 1)) 6)
-	      (puthash (match-string 1) (match-string 3) mandoku-subcolls))
-	      
+                  (puthash (match-string 1) (match-string 3) mandoku-titles)
+                  (puthash (match-string 1) (match-string 2) mandoku-textdates)
+                  (if (< (length (match-string 1)) 6)
+                      (puthash (match-string 1) (match-string 3) mandoku-subcolls))
 	  )))))
 )))
 
 (defun sinomacs-bibl-helm-candidates ()
   "Helm source for text lists"
   (let (l x)
+    (unless mandoku-initialized-p
+      (mandoku-initialize))
     ;; first lets add the mandoku titles
     (maphash (lambda (k v)
 	       (push (concat k " " (replace-regexp-in-string "-" " " v)) l))
