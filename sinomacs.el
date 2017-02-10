@@ -118,6 +118,7 @@
 (setq inhibit-startup-message t)
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message nil)
+(setq confirm-kill-emacs 'y-or-n-p)
 ;(kill-buffer (get-buffer "*scratch*"))
 (set-language-environment "UTF-8")
 
@@ -379,6 +380,13 @@ the mode doesn't support imenu."
 
 (global-set-key [next] 'sfp-page-down)
 (global-set-key [prior] 'sfp-page-up)
+
+(defun sinomacs-update-sinomacs ()
+  "This function only works when Sinomacs has been cloned from the GitHub repository."
+  (interactive)
+  (let ((default-directory sinomacs-dir))
+    (magit-pull-from-upstream (magit-pull-arguments))))
+
 ;;; Mandoku
 (use-package gh
   :ensure t)
@@ -402,7 +410,8 @@ the mode doesn't support imenu."
   :bind (("<f6>" . mandoku-search-text)
 	 ("<f7>"  . mandoku-search-titles)
 	 ("S-<f6>" . mandoku-search-user-text)
-	 ("S-<f7>" . mandoku-show-catalog))
+	 ("S-<f7>" . mandoku-show-catalog)
+	 ("C-c p" . mandoku-link-insert-link))
   )
 ;;; isearch yank (courtesy of Sacha Chua )
 (defun sinomacs-isearch-yank-current-word ()
@@ -450,9 +459,9 @@ the mode doesn't support imenu."
 				 (let ((last-nonmenu-event nil))
 				   (call-interactively 'find-file-existing))))
 (bind-key* (kbd "C-q") 'save-buffers-kill-emacs)
-(bind-key* (kbd "C-w") 'easymacs-kill-buffer)
+(bind-key* (kbd "C-w") 'easymacs-kill-some-buffers)
 (bind-key* (kbd "S-C-w") 'delete-frame)
-(bind-key* (kbd "M-w") 'easymacs-kill-some-buffers)
+;(bind-key* (kbd "M-w") 'easymacs-kill-some-buffers)
 
 (bind-key* (kbd "<end>") 'end-of-visual-line)
 (bind-key* (kbd "<home>") 'beginning-of-visual-line)
