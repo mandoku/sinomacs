@@ -113,7 +113,7 @@
 		    ;; 	(concat (car p)))))
 		    )
 	(apply orig-fun args))
-    nil))
+    nil)))
 
 ;(defun sinomacs-format--cjk-authors (value)
 (defun sinomacs-bibl-format--cjk-authors (orig-fun &rest args)
@@ -346,3 +346,5 @@
 ;; ("{\\\\aa}" "\345")
 ;; ("{\\\\copyright}" "\251")
 ;; ("\\\\copyright{}" "\251")
+
+;; sinomacs-bibl ends here
