@@ -25,8 +25,8 @@ Window manipulation (Use F1 to switch between open files):
 Shft-Ctrl-N	Open new window (and display command overview)
 Shft-Ctrl-W	Close window
 Ctrl-`		Switch window
-F4      	Remove pop-up window
-Shft-F4		Switch to other buffer(s) in split screen
+F4		Switch to other buffer(s) in split screen
+Shft-F4      	Remove pop-up window
 
 Input methods 	Emacs offers a large number of input methods for many languages:
 
@@ -37,25 +37,26 @@ There are also some convenient function keys:
 
 F1    	  	Display this command overview
 Shft-F1		Switch among open files 
-Ctrl-F1		List of open files and buffers
+Ctrl-F1		List open files and buffers
 Shft-Ctrl-F1 	Open folder
 Alt-F1 		Show list of recently opened files
 Shft-Alt-F1    	Open file or URL under the cursor
 
-F2      	List all occurrences of search term in current file
-Shft-F2		List all occurrences of search term in current directory
-Ctrl-F2		Search in ctext.org dictionary
-Shft-Alt-F2   	Search for component in CHISE IDS Find
+F2+o		List all occurrences of search term in current file
+F2+g		List all occurrences of search term in current directory (does not work on windows:-(
+F2+d		Search in ctext.org dictionary
+F2+f		Search for component in CHISE IDS Find
+Shift-F2 +/-	Zoom in (+) or out (-)
 
-F3      	Search for Chinese titles 
+F3      	Search for titles in the Kanseki Repository
 Alt-F3      	Show Mandoku Catalog
-Shft-F3		Search your Bibliography
+Shft-F3		Search your Bibliography 
 Ctrl-F3		Search Kanseki Database
 Shft-Ctrl-F3  	Search DDB Authority database for Persons
 Shft-Alt-F3  	Search DDB Authority database for Places
 
-F4 		Remove pop-up window
-Shft-F4		Switch to pop-up window
+F4 		Switch to pop-up window
+Shft-F4		Remove pop-up window
 Alt-F4		Quit emacs
 Ctrl-F4 	Split window horizontally
 Shft-Ctrl-F4  	Split window vertically
@@ -82,21 +83,24 @@ Shft-Alt-F7
 There are thousands of Emacs commands that have complex and difficult to remember keystrokes.  An easier way to invoke these is to type Alt-X and then the name of the command.  For example:
 
 Alt-X re-builder    Start creating a regular expression (pcre syntax)	 
-Alt-X occur	    Show all lines matching a pattern
+Alt-X occur	    Show all lines matching a pattern (this is also available through F2)
+Alt-X sinomacs-update-sinomacs	   Updates sinomacs.
 
-Function keys F8 to F12 are reserved for commands that pertain to particular types of files.
+Function keys F8 to F11 are reserved for commands that pertain to particular types of files.
 
-Mandoku:
+* Mandoku:
 
+Ctlr-c l	Store a link to text location. You can also select text and store this for later use.
+Ctrl-c p	Paste a citation with link to the citation source.
 
-Org: (These commands are only active when an org-mode document is active)
+* Org: (These commands are only active when an org-mode document is active)
 
 Ctlr-c Ctlr-e	Export document 
 
 
 Global Org commands:
 
-Ctlr-c l,	Store link
+Ctlr-c l,	Store link (see also above for the Mandoku version of this command)
 F12		Show agenda
 
 
