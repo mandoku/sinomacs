@@ -10,43 +10,157 @@ open-source, cross-platform learning environment which can be
 installed easily (even in a classroom where one does not have
 administrative rights).  In one package, it provides:
 
-  * A schema-aware, validating XML editor (nxml-mode)
+  * A tool for note-taking, task-management and (scientific) writing
+    (org-mode)
   * A platform-independent command line for running programs (eshell)
-  * An interactive tool for learning about regular expressions (re-builder with pcre2el)
-  * A fully-featured development environment for programming in almost any language.
+  * An interactive tool for learning about regular expressions
+    (re-builder with pcre2el)
+  * A fully-featured development environment for programming in almost
+    any language.
 
-Emacs has a reputation for complexity, archaism and idiosyncrasy, so it might seem an inappropriate application to introduce to students from a non-technical background.  But Emacs has most of the features of a modern desktop application; it is just that not all of these are turned on by default.  Emacs can be configured to be a surprisingly user-friendly application.
+Emacs has a reputation for complexity, archaism and idiosyncrasy, so
+it might seem an inappropriate application to introduce to students
+and researchers from a non-technical background.  But Emacs has most
+of the features of a modern desktop application; it is just that not
+all of these are turned on by default.  Emacs can be configured to be
+a surprisingly user-friendly application.  In addition to that, the
+extensibility and adaptability allows Emacs to interface with a broad
+range of applications, both local and online.  With packages for
+managing bibliographical databases, access to PDF files, research
+note-taking, task management and writing of scientific publications as
+reproducible research it is indeed a most suitable framework for a
+research environment.  It also serves the pedagogical purpose of
+demystifying the computer as a black box and encouraging students to
+take ownership of it as a powerful device that can be mended for their
+purpose.
 
-Sinomacs is designed to turn Emacs into as familiar an application as possible, so that students can start using it right away.  Conventional keystrokes and familiar terminology are used for basic file manipulations.  More advanced Emacs functionality is assigned to function keys.  Some of these choices override standard defaults, but the full power of Emacs is still available to the student who wants to delve deeper.
+Sinomacs is designed to turn Emacs into as familiar an application as
+possible, so that students can start using it right away.
+Conventional keystrokes and familiar terminology are used for basic
+file manipulations.  More advanced Emacs functionality is assigned to
+function keys.  Some of these choices override standard defaults, but
+the full power of Emacs is still available to the student who wants to
+delve deeper.
 
 Sinomacs is similar in principle to projects like [[http://xgarrido.github.io/emacs-starter-kit/starter-kit.html][Emacs Starter Kit]],
 but it supposes a narrower and less technically oriented audience.
 
-Sinomacs comes with an installer that modifies the user's .emacs configuration file to run itself. It automatically installs a number of third-party packages, including adaptive-wrap, undo-tree, company, magit, auctex, pcre2el and re-builder.
+Sinomacs comes with an installer that modifies the user's =.emacs=
+configuration file to run itself. It automatically installs a number
+of third-party packages, including mandoku.
 
-For a list of keybindings, see the file easymacs-help.txt, which is the page shown when Sinomacs starts up.
+For a list of keybindings, see the file =sinomacs-help.txt=, which is
+the page shown when Sinomacs starts up, to re-display it press F1
+(within Sinomacs).
 
 ** Installation
 
   - Install Emacs, version 24.4 or greater:
-     * Windows: [[https://ftp.gnu.org/gnu/emacs/windows/][Download Emacs]].  The filename will look something
-       like emacs-24.5-bin-i686-mingw32.zip.  Unzip the file in a
-       convenient place and start Emacs by going to the bin folder
-       and double-clicking on emacs.exe.  You may want to set up a
-       short-cut.
+     * Windows: The preferred way is to use the [[http://www.mandoku.org/mandoku-install-en.html#Sinomacs][Sinomacs-bundle]],
+       simple follow the instructions there.  Alternatively, for older
+       versions of Emacs: [[https://ftp.gnu.org/gnu/emacs/windows/][Download Emacs]].  The filename will look
+       something like emacs-24.5-bin-i686-mingw32.zip.  Unzip the file
+       in a convenient place and start Emacs by going to the bin
+       folder and double-clicking on emacs.exe.  You may want to set
+       up a short-cut.
 	
      * Mac: [[https://emacsformacosx.com][Download Emacs]].  Install and run the application as normal.
 	
      * Linux: Install via your package manager.
 
-  - Get the Sinomacs zip file: Use the green download button above or
-    use [[https://github.com/mandoku/sinomacs/archive/master.zip][Sinomacs Archive]].  Unzip it in a convenient location.
+  - Get Sinomacs:
+
+    * The Sinomacs bundle for Windows mentioned above already contains
+      [[http://www.mandoku.org/mandoku-install-en.html#Sinomacs][installation procedures]]. For other platforms, use the green
+      download button above or get the [[https://github.com/mandoku/sinomacs/archive/master.zip][Sinomacs Archive]].  Unzip it in
+      a convenient location. Then run Emacs and click on the menu
+      option File->Open File.  Navigate to the folder in which you
+      just unzipped Sinomacs and open the file called INSTALL.el.
+      Follow the directions on screen, which will tell you to select
+      the menu item Emacs-Lisp->Evaluate Buffer.
+
+    * Alternatively, if the =git= program is available, simply copy
+      the following lines of code and paste them into the Emacs
+      *Scratch* buffer (Go to the buffer menu and select the item
+      called * Scratch*), move the cursor to the very end of these
+      lines (it has to be after the last closing parentheses) and
+      press "C-x C-e", that is: hold down the =control= key, then
+      press "X" (you will see 'C-x' printed at the very bottom of the
+      Emacs appliaction window), let go and do =control= "E" next.
+
+#+BEGIN_EXAMPLE
+  (let ((default-directory user-emacs-directory))
+    (unless (file-exists-p (concat user-emacs-directory "sinomacs/sinomacs-help.txt"))
+      (shell-command
+       (concat
+	(executable-find "git")
+	" clone https://github.com/mandoku/sinomacs.git"))
+      (add-to-list 'load-path (concat user-emacs-directory "sinomacs"))
+      (load "INSTALL")
+      (find-file-other-frame
+       (concat sinomacs-dir "sinomacs-help.txt"))
+      (delete-other-frames)
+      (goto-char (point-min))))
+#+END_EXAMPLE 
+     *Note* =git= is a program that is used behind the scenes to keep
+     track of changes in files, and to download or upload these files
+     from/to remote computers. The Windows bundle mentioned above
+     contains this; if you are on Windows and do not use the bundle,
+     you should [[https://git-for-windows.github.io/][download]] and install it separately.  On Macintosh
+     computers, the program will install itself, with your permission,
+     when needed. Linux systems will either have it from the start or
+     you can get it with your package manager.
+
+  - Any of the above will/should (after a few moments of silence)
+    trigger a frenzy of activity in Emacs, downloading and installing
+    the necessary packages and settings that are needed, with a lot of
+    strange messages written to the screen.  Do not interrupt this
+    process, but wait until it comes to an end and prompts you for
+    information. Towards the end of the procedure, it will ask you a
+    number of questions as follows:
+
+    1. ""Please input the full path to the base directory for Mandoku
+       (default:~/krp): "
+
+       Emacs here asks you where to put the files Mandoku is
+       using. This includes your downloaded text files, a workspace
+       and a number of other files needed for the proper operation of
+       the program.  The default is to place it directly in the home
+       directory of your user account or, on Windows, in the root of
+       drive =C:=. For Windows, it should be in the root folder of a
+       drive, but it does not need to be "C:".
+
+    2. "No workspace found. It necessary to take full advantage of
+       Mandoku, but requires a (free) Github account. If you do not
+       currently have one, create one and come back, then you can
+       download (clone) a workspace from GitHub. Otherwise, deal with
+       Github later and continue without a workspace. Do you want to
+       download it now?"
+       
+       You should either answer "yes", if you have a [[http://github.com][GitHub]] accound
+       and are ready to download the additional files. If you answer
+       "no" here, you will be presented with the same question next
+       time you start Emacs.
+
+    3. "Git needs a name to identify you. How should git call you?"
+       
+       The name you use here will be saved locally and used in
+       communications with GitHub, this will be used, together with
+       the email alias (see next question) to identify you and credit
+       your activities there. You can use any alias you want, either a
+       real name or an online handle.
+
+    4. "Git needs an email alias to identify you. How should git mail
+       you?"
+       
+       The email you enter here does not need to be a valid one, it
+       will not be used to actually send mail to you, but only for git
+       based communications.  If you want to take credit for your
+       contributions on GitHub, it would make sense to use the same
+       email alias that you used when signing up with Github.
   
-  - Run Emacs and click on the menu option File->Open File.  Navigate
-    to the folder in which you just unzipped Sinomacs and open the
-    file called INSTALL.el.  Follow the directions on screen, which
-    will tell you to select the menu item Emacs-Lisp->Evaluate Buffer.
-  
-  - Sinomacs is now installed.  You may want to install some auxiliary
-    programmes such as [[https://hunspell.github.io][Hunspell]] for spell-checking.  For Macs,
-    [[http://brew.sh][Homebrew]] is the best way to do this.
+  - Sinomacs is now installed. The whole process might take 10-15
+    minutes, depending on the speed of your network connection and
+    computer.  You may want to install some auxiliary programmes such
+    as [[https://hunspell.github.io][Hunspell]] for spell-checking.  For Macs, [[http://brew.sh][Homebrew]] is the best
+    way to do this.
