@@ -10,7 +10,7 @@
 
 ;; path to the bibliography
 (setq  bibtex-completion-bibliography
-   '((concat sinomacs-sample-dir "sinomacs.bib")))
+   (concat sinomacs-sample-dir "sinomacs.bib"))
 
 
 
