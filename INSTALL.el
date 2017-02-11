@@ -58,7 +58,7 @@
     (goto-char (point-min))
     (if (boundp 'mandoku-base-dir)
         (insert "(setq mandoku-base-dir \"" mandoku-base-dir "\")\n"))
-    (insert (concat ";; Load Sinomacs\n" load-line "\n;; mandoku-base-dir \n"))
+    (insert (concat ";; Load Sinomacs\n" load-line "\n;;\n"))
     (save-buffer))
   (kill-buffer nil)
   

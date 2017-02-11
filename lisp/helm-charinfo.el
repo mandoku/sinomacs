@@ -26,13 +26,7 @@
   :group 'helm-charinfo)
 
 (defcustom helm-charinfo-unihan-readings
-  (car
-   (remove nil
-	   (cl-mapcar  (lambda (x) (car (file-expand-wildcards x)))
-		       (list "/Users/*/src/Unihan/Unihan_Readings.txt" ;;my system :-(
-			     (concat mandoku-sys-dir "Unihan_Readings.txt")
-			     ;;TODO Add suitable paths for other operating system
-			     ))))
+  (concat mandoku-sys-dir "Unihan_Readings.txt")
   "Location of unihan files."
   :type 'string
   :group 'helm-charinfo)
