@@ -30,14 +30,22 @@
 	   (define-key eww-mode-map "f" 'eww-lnum-follow)
           (define-key eww-mode-map "F" 'eww-lnum-universal)))
 
+(defun sinomacs-ctext-dict-eww-advice (orig-fun &rest args)
+  (when (string-match "ctext.org" eww-current-url)
+    (with-current-buffer (get-buffer "*eww*")
+      (search-forward "Chinese Text Project " nil t)
+      (forward-line 2)
+      (beginning-of-line)
+      (set-window-start (selected-window) (point)))))
+(eval-after-load "eww"
+  (advice-add 'eww-display-html :after  #'sinomacs-ctext-dict-eww-advice))
 
 (defun sinomacs-ctext-dict-eww-position ()
   (interactive)
   (search-forward "Chinese Text Project " nil t)
   (forward-line 2)
   (beginning-of-line)
-  (set-window-start (selected-window) (point))
- )    
+  (set-window-start (selected-window) (point)))
 
 (defun sinomacs-isbn-to-bibtex-lead (isbn)
   "Search lead.to for ISBN bibtex entry.
