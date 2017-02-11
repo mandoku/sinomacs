@@ -1,5 +1,11 @@
+;;; sinomacs-more --- Additional miscelleaneous routines for Sinomacs
 
-(defun sinomacs-get-char ())
+(defun sinomacs-get-pinyin-for-char ()
+  "This will call helm-charinfo and return the pinyin of the selected character."
+  (interactive)
+  (let ((sel (split-string (helm-charinfo))))
+    (kill-new (car sel))
+    (kill-new (cadr sel))))
 
 (defun sinomacs-grep (string &optional beg end)
   (interactive

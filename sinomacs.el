@@ -485,6 +485,7 @@ the mode doesn't support imenu."
       "Search"
       ("o" occur  "List search term in this file\n" :exit t)
       ("g" sinomacs-grep "List search term in this directory\n" :exit t)
+      ("c" sinomacs-get-pinyin-for-char "Lookup pinyin for character, add to clipboard." :exit t)
       ("d" sinomacs-ctext-dict-region "Lookup search term in Ctext.org dictionary\n" :exit t)
       ("f" sinomacs-chise-find "Lookup character in CHISE IDS\n" :exit t)
       )
