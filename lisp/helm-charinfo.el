@@ -114,8 +114,22 @@
 		(when (string= type "kDefinition")
 		  (puthash unicode (plist-put tchar :kDefinition def)  helm-charinfo-chartab))))
 	    ))))))
-  
-  
+
+(defun helm-charinfo-get-pinyin (str &optional all)
+  ;; todo: use better pinyin table with less rare forms!
+  "Lookup pinyin for all characters in term, using the most
+frequent pinyin reading if there are several possibilities. If
+the optional argument is set to t, give all pinyin forms. "
+  (let* ((chars (string-to-list str))
+	 (pys (mapcar (lambda (x)
+			(let ((c  (gethash (format "U+%4.4X" x) helm-charinfo-chartab)) v)
+			  (if (setq v (plist-get c :kHanyuPinyin))
+			      (if (and all (> (length v) 1))
+				  (concat "[" (mapconcat 'identity v "/") "]")
+				(car v))
+			    (plist-get c :kMandarin))))
+                        chars)))
+      (unless (memq nil pys) (apply 'concat pys))))
 
 (defun helm-charinfo-get-candidates ()
   (unless helm-charinfo-chartab
@@ -143,7 +157,7 @@
     ))
 
 (defvar helm-charinfo-source
-  (helm-build-sync-source "Charinfo"
+  (helm-build-sync-source "Charinfo: Lookup characters by associated information:"
     :candidates #'helm-charinfo-get-candidates
     :action '(("Select" . (lambda (candidate)
 			    (setq helm-charinfo-selected candidate)))
