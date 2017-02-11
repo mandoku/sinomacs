@@ -1,5 +1,5 @@
 ;;; sinomacs-more --- Additional miscelleaneous routines for Sinomacs
-
+(require 'helm-charinfo)
 (defun sinomacs-get-pinyin-for-char ()
   "This will call helm-charinfo and return the pinyin of the selected character."
   (interactive)

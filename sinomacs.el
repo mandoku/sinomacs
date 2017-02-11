@@ -407,12 +407,15 @@ the mode doesn't support imenu."
   (mandoku-initialize)
   (define-key mandoku-view-mode-map (kbd "C-c i")  'mandoku-open-image-at-page)
   (define-key mandoku-view-mode-map (kbd "C-c d")  'mandoku-get-remote-text-now)
+  (define-key mandoku-view-mode-map (kbd "C-<f8>")  'org-store-link)
+  (define-key mandoku-view-mode-map (kbd "<f8>")  'mandoku-annot-annotate)
   :bind (("<f6>" . mandoku-search-text)
 	 ("<f7>"  . mandoku-search-titles)
 	 ("S-<f6>" . mandoku-search-user-text)
 	 ("S-<f7>" . mandoku-show-catalog)
 	 ("C-c p" . mandoku-link-insert-link))
   )
+
 ;;; isearch yank (courtesy of Sacha Chua )
 (defun sinomacs-isearch-yank-current-word ()
   "Pull current word from buffer into search string."
@@ -545,8 +548,10 @@ the mode doesn't support imenu."
 ;; (bind-key* (kbd "<C-f7>") 'outline-next-visible-heading)
 ;; (bind-key* (kbd "<S-C-f7>") 'outline-previous-visible-heading)
 
-;; F12
+;; F8 
 
+
+;; F12
 (bind-key* (kbd "<f12>")  'org-agenda)
 
 ;;; Load the lisp files in sinomacs-dir

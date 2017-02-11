@@ -120,6 +120,8 @@
   "Lookup pinyin for all characters in term, using the most
 frequent pinyin reading if there are several possibilities. If
 the optional argument is set to t, give all pinyin forms. "
+  (unless helm-charinfo-chartab
+    (helm-charinfo-do-chartab))
   (let* ((chars (string-to-list str))
 	 (pys (mapcar (lambda (x)
 			(let ((c  (gethash (format "U+%4.4X" x) helm-charinfo-chartab)) v)
@@ -133,8 +135,7 @@ the optional argument is set to t, give all pinyin forms. "
 
 (defun helm-charinfo-get-candidates ()
   (unless helm-charinfo-chartab
-    (helm-charinfo-do-chartab)
-    )
+    (helm-charinfo-do-chartab))
   (let (l x d)
     (maphash (lambda (k v)
 	       (setq d (or (plist-get v :kDefinition) ""))

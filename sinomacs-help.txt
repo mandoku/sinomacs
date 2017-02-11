@@ -44,6 +44,7 @@ Shft-Alt-F1    	Open file or URL under the cursor
 
 F2+o		List all occurrences of search term in current file
 F2+g		List all occurrences of search term in current directory (does not work on windows:-(
+F2+c		Lookup character information
 F2+d		Search in ctext.org dictionary
 F2+f		Search for component in CHISE IDS Find
 Shift-F2 +/-	Zoom in (+) or out (-)
@@ -87,13 +88,15 @@ Alt-X occur	    Show all lines matching a pattern (this is also available throug
 Alt-X sinomacs-update-sinomacs	   Updates sinomacs.
 
 Function keys F8 to F11 are reserved for commands that pertain to particular types of files.
+These commands are only active when documents of this type are active.
 
 * Mandoku:
 
-Ctlr-c l	Store a link to text location. You can also select text and store this for later use.
-Ctrl-c p	Paste a citation with link to the citation source.
+F8		Annotate selected term
+Ctlr-F8		Store a link to text location. You can also select text and store this for later use.
+Ctrl-c p	Paste a citation with link to the citation source (Does not work if text is selected).
 
-* Org: (These commands are only active when an org-mode document is active)
+* Org: 
 
 Ctlr-c Ctlr-e	Export document 
 
