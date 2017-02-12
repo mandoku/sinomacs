@@ -26,7 +26,7 @@
   :group 'helm-charinfo)
 
 (defcustom helm-charinfo-unihan-readings
-  (concat mandoku-sys-dir "Unihan_Readings.txt")
+  (concat mandoku-base-dir "system/Unihan_Readings.txt")
   "Location of unihan files."
   :type 'string
   :group 'helm-charinfo)
@@ -60,15 +60,17 @@
 	(readings (file-name-nondirectory helm-charinfo-unihan-readings)))
     (unless (file-exists-p target)
       (message "Downloading Unihan readings file from Unicode website.")
-      (url-copy-file helm-charinfo-unihan-url  target)
-      (if (file-exists-p target)
-	  (with-current-buffer (find-file-noselect helm-charinfo-unihan-readings)
-	    (erase-buffer)
+      (url-copy-file helm-charinfo-unihan-url  target))
+    (if (and (file-exists-p target)
+             (not (file-exists-p helm-charinfo-unihan-url)))
+        (with-current-buffer (find-file-noselect helm-charinfo-unihan-readings)
+          (require 'arc-mode)
+          (erase-buffer)
 	    (archive-zip-extract target readings)
 	    (save-buffer)
 	    (kill-buffer)
 	    (message "Successfully downloaded Unihan readings file from the Unicode website."))
-	(message (format "Could not download Unihan readings file from %s." unihan-url))))))
+	(message (format "Could not download Unihan readings file from %s." unihan-url)))))
 
 (defun helm-charinfo-remove-tonemarks (str)
   (let ((s str))
