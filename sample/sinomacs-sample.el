@@ -5,8 +5,9 @@
 
 (setq 	org-directory sinomacs-sample-dir
 	org-default-notes-file (concat sinomacs-sample-dir "sinomacs-notes.org"))
-
-(add-to-list 'org-agenda-files org-default-notes-file)
+(if (boundp 'org-agenda-files)
+    (add-to-list 'org-agenda-files org-default-notes-file)
+  (setq org-agenda-files (list org-default-notes-file)))
 
 ;; path to the bibliography
 (setq  bibtex-completion-bibliography
