@@ -13,6 +13,7 @@
   easier for users without previous experience of Emacs and without a
   technical background to use =Mandoku= productively.  
 
+  The workshop handout for Sinomacs has also been written using org, you can inspect it [[file:sinomacs-ws-handout.org][here]].
 
 * Orgmode
 

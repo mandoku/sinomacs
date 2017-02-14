@@ -1,0 +1,116 @@
+#+TITLE: Sinomacs: Towards a research environment for Chinese Studies
+#+AUTHOR: Christian Wittern
+#+DATE: 2017-02-15
+#+OPTIONS: toc:nil num:nil ^:{}
+
+* Aims of the workshop 
+
+** For you:
+   - Learn about the thinking behind Sinomacs, get an idea of its possibilities
+   - Consider if and how it could fit into your own research process
+   - Install it on your computer and get familiar with the tool (if
+     you don't like it / don't use it anymore, it can very easily be
+     removed)
+** For me:
+   - Get more experience about the difficulties you have when
+     encountering Sinomacs and the related tools
+   - Learn where and how to improve the process
+   - Continue to build the community around Kanseki Repository,
+     Mandoku and now Sinomacs
+
+
+* Abstract                                                         :noexport:
+Mandoku is a module for accessing the Kanseki Repository without the need for a browser, directly from the editing environment, in this case Emacs. Recently, this has been supplemented by Sinomacs, which is a configuration of these tools with the aim to make it as easy and comfortable as possible to read, translate annotate and write about premodern Chinese texts.  This is a work in progress started only recently, so this will be a hands-on experience for those (also) interested in the technical details behind Digital Philology. Ideally participants would bring their own Laptops to install and run the software, as explained in the workshop. 
+
+* Installation
+
+  To install Sinomacs (which includes Mandoku, the package to access
+  the Kanseki Repository), follow the instructions online at
+  https://github.com/mandoku/sinomacs#installation. Windows users,
+  please try the Sinomacs bundle. Other platforms, please use the
+  method described under "Alternatively..".  This will make it
+  possible to update your system later.
+
+* Some use cases for today
+
+  Play around as much as you like.  Here is what I want to introduce
+  to you today[fn::You will find this document also interlinked from
+  the sample document accessible with F7 from within Sinomacs.]:
+
+** Search in the Kanseki Repository, identify and download a text
+   Let‘s look for 冬雪: 
+
+   - Press F6 and look at the bottom of the screen. A prompt for a
+     search term appears.  It will take some characters from the point
+     on screen where your cursor happens to be, the assumption here is
+     that most searches will start from a text you are reading at the
+     moment. Here we delete the prompt and input the above characters
+     instead.
+   - The result is displayed in a different window on a split screen
+     (F4 will move between the windows). See how you can change the
+     sort order according to different criteria [fn:: If you are
+     curious about the "dating" sort order -- this is still
+     preliminary and does not reflect current research. If you
+     downloaded the workspace, you will find the document used to
+     determine the sort order under
+     [[file:~/tlsdev/krp/KR-Workspace/Settings/krp-by-date.txt][KR-Workspace/Settings/krp-by-date.txt]] in your Kanseki Repository
+     (krp) folder.] by pressing the keys indicated. Note also how this
+     search result is plain text in the same format as the other KR
+     texts, and can be saved, edited etc. as you need it.
+   - Find the entry of 5, 6a7 of the text =KR4b0011 鮑明遠集-劉宋-鮑照
+     = (that is 鮑氏集卷第五, folio 6 verso line 7) and click on the
+     first link to the left of the KWIC text.
+   - The text will be displayed at the location, with the hit
+     highlighted.  Note that you can also inspect the scan of the
+     woodblock print by pressing =C-c i= and selecting the =WYG=
+     edition.
+   - Now scroll up to the top of this file. You will see a line that
+     says: "# Don't edit this file.  If you want to edit, press C-c d
+     to download it first." The reason for this is that the file is
+     saved first into a temporary location for you to inspect.  If you
+     need to work with this text, that is if you want to add
+     annotations or translation, or simply want to have it available
+     offline, you should press =C-c d= to download[fn::Download is
+     used here in a loose sense, the technically correct term would be
+     =clone=, which is in a way a 'download with a subscription to
+     changes'. ] it to your PC.
+   - You can now start to rearrange the poem as one verse line per
+     line, to make it easier to read. You can also highlight terms you
+     want to annotate and press F8 to insert an
+     annotation. Annotations are defined in the Mandoku text format
+     (see TODO) as beginning with :zhu: on a line by itself and ending
+     with :end: by itself.  The text in between is free, but the
+     convention is that lines will start with the characters from the
+     immediately preceding text line. It is therefore good to
+     rearrange the text before annotations are made. If Pinyin support
+     has been loaded, the system will suggest a Pinyin reading for the
+     characters[fn:: Currently, these Pinyin readings are based on the
+     Unicode Unihan database. This list is very comprehensive and
+     lists also very rare and obscure readings, which makes it
+     cumbersome to use. For this reason, the default readings
+     presented contain only the most frequent readings; to inspect all
+     readings press F2 c to use the character lookup.].
+
+** Other lookup facilities
+   - The F2 key bundles some lookup options for terms or characters, try them.
+   - F3 is for bibliographic lookup and other related information
+
+** Document export
+ - One of the powerful features of Org mode, on which Mandoku is
+   based, is the export to different document formats.  This makes it
+   an excellent format for scientific writing, since it makes it
+   possible to have the whole research workflow in one working
+   environment.  Citations from texts in the Kanseki Repository can be
+   copied with C-F8 (=store link= command) and then pasted into
+   another document with =C-c p=.
+
+ - F7 opens a sample document which also contains some bibliographic
+   references, to show you how bibliographic information can be
+   managed within Sinomacs.  You can press =C-c C-e= to see a list of
+   possible target formats.  The most important ones are the Open
+   Office format (ODT) and HTML for websites.  PDF files for print and
+   presentations can be produced also, but this requires additional a
+   LaTeX processing system to be installed[fn:: Org will produce a
+   latex file, that will need to be converted to PDF by a latex
+   processing chain.  This is out of scope for todays workshop.]
+   
