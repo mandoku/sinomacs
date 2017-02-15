@@ -48,6 +48,10 @@
        (init-file (or user-init-file "~/_emacs.el"))
        ;; Evade find-file advice
        (init-buffer (find-file-noselect init-file)))
+  
+  (unless (and (boundp 'sinomacs-loaded) sinomacs-loaded)
+    (load sinomacs-file)))
+  
   (with-current-buffer init-buffer
     (goto-char (point-min))
     (while (re-search-forward
@@ -61,7 +65,4 @@
     (insert (concat ";; Load Sinomacs\n" load-line "\n;;\n"))
     (save-buffer))
   (kill-buffer nil)
-  
-  (unless (and (boundp 'sinomacs-loaded) sinomacs-loaded)
-    (load sinomacs-file)))
   
