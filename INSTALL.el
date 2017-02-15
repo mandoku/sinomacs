@@ -50,7 +50,7 @@
        (init-buffer (find-file-noselect init-file)))
   
   (unless (and (boundp 'sinomacs-loaded) sinomacs-loaded)
-    (load sinomacs-file)))
+    (load sinomacs-file))
   
   (with-current-buffer init-buffer
     (goto-char (point-min))
@@ -65,4 +65,4 @@
     (insert (concat ";; Load Sinomacs\n" load-line "\n;;\n"))
     (save-buffer))
   (kill-buffer nil)
-  
+)  
