@@ -84,7 +84,7 @@
 (defun helm-charinfo-do-chartab ()
   "Read the Unihan Readings into helm-charinfo-chartab"
   (setq helm-charinfo-chartab (make-hash-table :test 'equal))
-  (when (file-exists-p helm-charinfo-unihan-readings)
+  (if (file-exists-p helm-charinfo-unihan-readings)
     (with-temp-buffer
       (let ((coding-system-for-read 'utf-8)
 	    textid)
@@ -109,7 +109,11 @@
 					      )  helm-charinfo-chartab)
 		(when (string= type "kDefinition")
 		  (puthash unicode (plist-put tchar :kDefinition def)  helm-charinfo-chartab))))
-	    ))))))
+	    ))))
+    (progn
+      (helm-charinfo-get-unihan)
+      (helm-charinfo-do-chartab)
+    )))
 
 (defun helm-charinfo-get-pinyin (str &optional all)
   ;; todo: use better pinyin table with less rare forms!
