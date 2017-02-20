@@ -93,6 +93,9 @@
    ("C-c a" . org-agenda)
    ("C-c r" . org-capture)
    ("C-c L" . org-insert-link-global)
+   ("M-<down>" . org-metadown)
+   ("M-<up>" . org-metaup)
+   ("C-c L" . org-insert-link-global)
    ("C-c o" . org-open-at-point-global))
   )
 (use-package org-ref
@@ -244,11 +247,11 @@ the mode doesn't support imenu."
       imenu-scanning-message nil
       imenu-auto-rescan t)
 
-(use-package drag-stuff
-  :ensure t
-  :diminish 'drag-stuff-mode
-  :config (progn (drag-stuff-global-mode 1)
-                 (drag-stuff-define-keys)))
+;; (use-package drag-stuff
+;;   :ensure t
+;;   :diminish 'drag-stuff-mode
+;;   :config (progn (drag-stuff-global-mode 1)
+;;                  (drag-stuff-define-keys)))
 
 ;; Programming tools
 (add-hook 'prog-mode-hook 'linum-mode)
@@ -474,7 +477,9 @@ the mode doesn't support imenu."
 ;; F1
 (bind-key* (kbd "<f1>") '(lambda () (interactive)
 			    (find-file
-			     (concat sinomacs-dir "sinomacs-help.txt"))))
+			     (concat sinomacs-dir "sinomacs-help.txt"))
+			    (goto-char (point-min))
+			    ))
 (bind-key* (kbd "<S-f1>") 'ido-switch-buffer)
 (bind-key* (kbd "<C-f1>") 'ibuffer)
 (bind-key* (kbd "<S-C-f1>") '(lambda () (interactive) (find-file "")))
@@ -581,6 +586,10 @@ the mode doesn't support imenu."
 
 ;;; Sample for demonstration.  Remove this if not needed anymore
 (load (concat sinomacs-dir "sample/sinomacs-sample"))
+
+(if (fboundp 'hydra-tls/body)
+    (bind-key* (kbd "<f8>") 'hydra-tls/body))
+
 
 (provide 'sinomacs)
 ;; sinomacs.el ends here
