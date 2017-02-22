@@ -115,12 +115,12 @@ displayed in the mode-line.")
 ;; Get hunspell dictionaries like so:
 ;; svn co https://src.chromium.org/chrome/trunk/deps/third_party/hunspell_dictionaries/
 ;; make sure that one dictionary is soft-linked to default.dic and default.aff
-;; (when (executable-find "hunspell")
-;;   (setq-default ispell-program-name "hunspell")
-;;   (setq ispell-really-hunspell t))
-;; (add-hook 'text-mode-hook '(lambda ()
-;; 			     (flyspell-mode 1)))
-;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(when (executable-find "hunspell")
+  (setq-default ispell-program-name "hunspell")
+  (setq ispell-really-hunspell t))
+(add-hook 'text-mode-hook '(lambda ()
+			     (flyspell-mode 1)))
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 ;;; Eshell
 ;; Always save eshell history without asking
