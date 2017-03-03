@@ -13,8 +13,8 @@
 (setq  bibtex-completion-bibliography
    (concat sinomacs-sample-dir "sinomacs.bib"))
 
-(bind-key* (kbd "<f7>") '(lambda () (interactive)
-			   (find-file-other-frame
-			    (concat sinomacs-sample-dir "sinomacs.org"))))
+;; (bind-key* (kbd "<f7>") '(lambda () (interactive)
+;; 			   (find-file-other-frame
+;; 			    (concat sinomacs-sample-dir "sinomacs.org"))))
 
 ;;; sinomacs-sample.el

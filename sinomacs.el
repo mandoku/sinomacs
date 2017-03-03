@@ -411,10 +411,10 @@ the mode doesn't support imenu."
   (define-key mandoku-view-mode-map (kbd "C-c i")  'mandoku-open-image-at-page)
   (define-key mandoku-view-mode-map (kbd "C-c d")  'mandoku-get-remote-text-now)
   (define-key mandoku-view-mode-map (kbd "C-<f8>")  'org-store-link)
-  (define-key mandoku-view-mode-map (kbd "<f8>")  'mandoku-annot-annotate)
+;  (define-key mandoku-view-mode-map (kbd "<f8>")  'mandoku-annot-annotate)
   :bind (("<f6>" . mandoku-search-text)
 	 ("<f7>"  . mandoku-search-titles)
-	 ("S-<f6>" . mandoku-search-user-text)
+	 ("S-<f6>" . mandoku-tls-grep-local-texts)
 	 ("S-<f7>" . mandoku-show-catalog)
 	 ("C-c p" . mandoku-link-insert-link))
   )
@@ -579,6 +579,7 @@ the mode doesn't support imenu."
 (make-local-variable 'kill-buffer-query-functions)
 (add-hook 'kill-buffer-query-functions 'kill-unkillable-buffer)
 (read-only-mode)
+(goto-char (point-min))
 (view-mode)
 
 ;;; Load the remains of the Easymacs package
@@ -586,9 +587,9 @@ the mode doesn't support imenu."
 
 ;;; Sample for demonstration.  Remove this if not needed anymore
 (load (concat sinomacs-dir "sample/sinomacs-sample"))
-
+;;; we want this only if not overwritten by local mode map
 (if (fboundp 'hydra-tls/body)
-    (bind-key* (kbd "<f8>") 'hydra-tls/body))
+    (bind-key (kbd "<f8>") 'hydra-tls/body))
 
 
 (provide 'sinomacs)
