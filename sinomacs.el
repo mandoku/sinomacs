@@ -178,10 +178,11 @@
 (setq cua-keep-region-after-copy t)
 
 ;; redo+ -- simple, linear undo/redo
-(use-package redo+
-   :ensure t
-   :bind* (("C-z" . undo)
- 	 ("C-S-z" . redo)))
+;; this is gone from melpa, removing for now to avoid breaking the sinomacs install 2018-04-03
+;(use-package redo+
+;   :ensure t
+;   :bind* (("C-z" . undo)
+; 	 ("C-S-z" . redo)))
 
 ;; Enable recently-opened files menu
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
