@@ -70,7 +70,7 @@ the page shown when Sinomacs starts up, to re-display it press F1
 	 xcode-select --install
 	 #+END_EXAMPLE
 	 
-       Note: Emacs from the Terminal wont play well with sinomacs, instead go to [[https://emacsformacosx.com][Download Emacs]] and install and run the application as normal. Users of os X < 10.11 will see warnings when trying to establish secure connections. To workaround this follow the prompts inside emacs and accept connections despite the warnings.  
+       *Note* Emacs from the Terminal wont play well with sinomacs, instead go to [[https://emacsformacosx.com][Download Emacs]] and install and run the application as normal. Users of os X < 10.11 will see warnings when trying to establish secure connections. To workaround this follow the prompts inside emacs and accept connections despite the warnings.  
 
   - Get Sinomacs:
 
